@@ -20,7 +20,11 @@ local player = {
   -- basic player functions
   load = nil,
   update = nil,
-  draw = nil
+  draw = nil,
+  -- other
+  timers = {},
+  shootRate = 0.1,
+  category = 1,
 }
 
 player.load = function()
@@ -29,7 +33,9 @@ player.load = function()
   -- physics
   player.body = love.physics.newBody(world, 25, 25, "dynamic")
   player.shape = love.physics.newRectangleShape(0, 0, player.w, player.h)
-  love.physics.newFixture(player.body, player.shape, 1)
+  player.fixture = love.physics.newFixture(player.body, player.shape, 1)
+
+  player.fixture:setCategory(player.category)
 
   -- damping (decelaration)
   player.body:setLinearDamping(0.05)
@@ -41,6 +47,9 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid(1, 1), 0.5), -- 1 idle
     anim8.newAnimation(player.spriteGrid("1-3", "2-3"), 0.15), -- 2 walk
   }
+
+  -- set up timers
+  addTimer(0.0, "shoot", player.timers)
 end
 
 local function flip(player)
@@ -54,7 +63,7 @@ player.update = function(dt)
   -- update anim
   player.animations[player.curAnim]:update(dt)
 
-  -- TEMP MOVEMENT CODE
+  -- movement
   if love.keyboard.isDown('a') and love.keyboard.isDown('d') == false then
     player.body:applyForce(-player.speed, 0)
     player.curAnim = 2
@@ -69,6 +78,15 @@ player.update = function(dt)
     end
   end
 
+  if love.keyboard.isDown('m') and updateTimer(dt, "shoot", player.timers) then
+    local x, y = player.body:getWorldPoints(player.shape:getPoints())
+    local offD = 0
+    if player.dir == 1 then offD = 5 else offD = -2 end
+
+    addBullet(x + offD, y + 3.5, player.dir)
+    resetTimer(player.shootRate, "shoot", player.timers)
+  end
+
   local dx, dy = player.body:getLinearVelocity()
 
   if dx > player.speed and player.dir == 1 then
@@ -80,7 +98,6 @@ player.update = function(dt)
   if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 then
     player.curAnim = 1
   end
-
 end
 
 player.draw = function()

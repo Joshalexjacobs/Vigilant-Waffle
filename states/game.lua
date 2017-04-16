@@ -1,6 +1,7 @@
 --game.lua
 
 player = require "player"
+require "bullets"
 
 game = {}
 
@@ -9,26 +10,30 @@ objects = {}
 function game:enter()
   --let's create the ground
   objects.ground = {}
-  objects.ground.body = love.physics.newBody(world, 64 / 2, 64 - 5 /2) --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
-  objects.ground.shape = love.physics.newRectangleShape(64, 5) --make a rectangle with a width of 650 and a height of 50
+  objects.ground.body = love.physics.newBody(world, 64 / 2, 64 - 5 / 2)
+  objects.ground.shape = love.physics.newRectangleShape(64, 5)
   objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape); --attach shape to body
 
   objects.wallLeft = {}
   objects.wallLeft.body = love.physics.newBody(world, 64 + 2.5 / 2, 64 / 2)
   objects.wallLeft.shape = love.physics.newRectangleShape(5, 64)
   objects.wallLeft.fixture = love.physics.newFixture(objects.wallLeft.body, objects.wallLeft.shape);
+  objects.wallLeft.fixture:setCategory(3)
 
   objects.wallRight = {}
   objects.wallRight.body = love.physics.newBody(world, -2.5 / 2, 64 / 2)
   objects.wallRight.shape = love.physics.newRectangleShape(5, 64)
   objects.wallRight.fixture = love.physics.newFixture(objects.wallRight.body, objects.wallRight.shape);
+  objects.wallRight.fixture:setCategory(3)
 
   player.load()
+  loadBullets()
 end
 
 function game:update(dt)
   world:update(dt)
   player.update(dt)
+  updateBullet(dt)
 end
 
 function game:draw()
@@ -41,6 +46,10 @@ function game:draw()
   love.graphics.setColor(255, 255, 255)
 
   player.draw()
+
+  drawBullet()
+
+  --love.graphics.rectangle("fill", 10, 20, 2, 2)
 
   maid64.finish()
 end
