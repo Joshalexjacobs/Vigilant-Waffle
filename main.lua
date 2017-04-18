@@ -33,7 +33,7 @@ function love.load(arg)
   love.graphics.setFont(smallFont)
 
   -- setup maid64
-  maid64.setup(80)
+  maid64.setup(64)
 
   -- setup physics (1 meter = 64 pixels)
   love.physics.setMeter(32)

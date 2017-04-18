@@ -25,11 +25,10 @@ local player = {
   timers = {},
   shootRate = 0.1,
   category = 1,
+  isFalling = true,
 }
 
 player.load = function()
-  -- load
-
   -- physics
   player.body = love.physics.newBody(world, 25, 25, "dynamic")
   player.shape = love.physics.newRectangleShape(0, 0, player.w, player.h)
@@ -41,11 +40,12 @@ player.load = function()
   player.body:setLinearDamping(0.05)
 
   -- animations/sprites
-  player.spriteGrid = anim8.newGrid(8, 16, 24, 48, 0, 0, 0)
+  player.spriteGrid = anim8.newGrid(8, 16, 24, 64, 0, 0, 0)
   player.spriteSheet = maid64.newImage(player.spriteSheet)
   player.animations = {
     anim8.newAnimation(player.spriteGrid(1, 1), 0.5), -- 1 idle
     anim8.newAnimation(player.spriteGrid("1-3", "2-3"), 0.15), -- 2 walk
+    anim8.newAnimation(player.spriteGrid(1, 4), 0.15), -- 3 falling
   }
 
   -- set up timers
@@ -97,6 +97,22 @@ player.update = function(dt)
 
   if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 then
     player.curAnim = 1
+  end
+
+  if player.isFalling then
+    player.curAnim = 3
+  end
+
+  local contacts = player.body:getContactList()
+
+  for i = 1, #contacts do
+    if contacts[i]:isTouching() and player.isFalling then
+      local fixA, fixB = contacts[i]:getFixtures()
+      if fixA:getCategory() == 4 or fixB:getCategory() == 4 then
+        player.isFalling = false
+        player.curAnim = 2
+      end
+    end
   end
 end
 

@@ -1,11 +1,13 @@
 --game.lua
 
 player = require "player"
+local background = require "scrollingBG"
 require "bullets"
 
 game = {}
 
 objects = {}
+bg = {}
 
 function game:enter()
   --let's create the ground
@@ -13,6 +15,7 @@ function game:enter()
   objects.ground.body = love.physics.newBody(world, 64 / 2, 64 - 5 / 2)
   objects.ground.shape = love.physics.newRectangleShape(64, 5)
   objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape); --attach shape to body
+  objects.ground.fixture:setCategory(4)
 
   objects.wallLeft = {}
   objects.wallLeft.body = love.physics.newBody(world, 64 + 2.5 / 2, 64 / 2)
@@ -28,16 +31,21 @@ function game:enter()
 
   player.load()
   loadBullets()
+  background.load()
 end
 
 function game:update(dt)
   world:update(dt)
   player.update(dt)
   updateBullet(dt)
+
+  background.update(dt)
 end
 
 function game:draw()
   maid64.start()
+
+  background.draw()
 
   love.graphics.setColor(128, 17, 17)
   love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
