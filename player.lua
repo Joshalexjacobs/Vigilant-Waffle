@@ -7,6 +7,7 @@ local player = {
   offX = -2.5,
   offY = -2,
   speed = 30,
+  jumpStrength = -70, -- testing this currently -- !!!
   dir = 1, -- 1 = right, -1 = left
   -- basic player assets
   spriteSheet = "img/player2.png",
@@ -26,20 +27,22 @@ local player = {
   shootRate = 0.1,
   category = 1,
   isFalling = true,
+  isJumping = false -- testing this currently -- !!!
 }
 
 player.load = function()
-  -- physics
+  --[[ Physics setup ]]
   player.body = love.physics.newBody(world, 25, 25, "dynamic")
   player.shape = love.physics.newRectangleShape(0, 0, player.w, player.h)
   player.fixture = love.physics.newFixture(player.body, player.shape, 1)
 
   player.fixture:setCategory(player.category)
+  player.body:setFixedRotation(true)
 
-  -- damping (decelaration)
+  --[[ Damping (decelaration) ]]
   player.body:setLinearDamping(0.05)
 
-  -- animations/sprites
+  --[[ Player animations/sprites]]
   player.spriteGrid = anim8.newGrid(8, 16, 24, 64, 0, 0, 0)
   player.spriteSheet = maid64.newImage(player.spriteSheet)
   player.animations = {
@@ -48,22 +51,23 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid(1, 4), 0.15), -- 3 falling
   }
 
-  -- set up timers
+  --[[ Set up player timers ]]
   addTimer(0.0, "shoot", player.timers)
 end
 
+--[[ Player animation flip function ]]
 local function flip(player)
-  for i=1, table.getn(player.animations) do
+  for i = 1, table.getn(player.animations) do
     player.animations[i]:flipH()
   end
-  player.dir = -player.dir
+  player.dir = -player.dir -- flip their direction as well
 end
 
 player.update = function(dt)
-  -- update anim
+  --[[ Update player anim ]]
   player.animations[player.curAnim]:update(dt)
 
-  -- movement
+  --[[ Player left/right movement ]]
   if love.keyboard.isDown('a') and love.keyboard.isDown('d') == false then
     player.body:applyForce(-player.speed, 0)
     player.curAnim = 2
@@ -78,6 +82,7 @@ player.update = function(dt)
     end
   end
 
+  --[[ Player Shoot ]]
   if love.keyboard.isDown('m') and updateTimer(dt, "shoot", player.timers) then
     local x, y = player.body:getWorldPoints(player.shape:getPoints())
     local offD = 0
@@ -89,28 +94,44 @@ player.update = function(dt)
 
   local dx, dy = player.body:getLinearVelocity()
 
+  --[[ Player Jump ]]
+  if love.keyboard.isDown('n') and player.isFalling == false then -- and player is touching the ground
+    -- player.isGrounded = false
+    -- player.isJumping = true
+    -- player.curAnim = 4 -- jumping animation, once the player reaches the peak start falling animation
+    player.isFalling = true
+    player.body:applyForce(0, player.jumpStrength)
+    --player.body:setLinearVelocity(dx, player.jumpStrength) -- ???
+  end
+
+  --[[ Move player left/right depending on dx velocity and their direction ]]
   if dx > player.speed and player.dir == 1 then
     player.body:setLinearVelocity(player.speed, dy)
   elseif dx < -player.speed and player.dir == -1 then
     player.body:setLinearVelocity(-player.speed, dy)
   end
 
+  --[[ Play idle animation ]]
   if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 then
     player.curAnim = 1
   end
 
+  --[[ Play falling animation ]]
   if player.isFalling then
     player.curAnim = 3
   end
 
   local contacts = player.body:getContactList()
 
+  --[[ Traverse objects contaced with player ]]
   for i = 1, #contacts do
     if contacts[i]:isTouching() and player.isFalling then
       local fixA, fixB = contacts[i]:getFixtures()
+      --[[ If the player is touching the ground and is falling, ground the player ]]
       if fixA:getCategory() == 4 or fixB:getCategory() == 4 then
         player.isFalling = false
         player.curAnim = 2
+        -- if player.isJumping then player.isJumping = !player.isJumping end -- if player was jumping, now they're not
       end
     end
   end

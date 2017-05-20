@@ -9,7 +9,7 @@ require "lib/timer"
 require "states/menu"
 require "states/game"
 
-world = love.physics.newWorld(0, 9.81*32, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
+world = love.physics.newWorld(0, 9.81 * 32, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
 
 -- global function(s)
 function copy(obj, seen)
@@ -23,7 +23,7 @@ function copy(obj, seen)
 end
 
 function love.load(arg)
-  love.window.setMode(160*3, 144*3, {resizable=true, vsync=true, minwidth=200, minheight=200})
+  love.window.setMode(160*4, 144*3, {resizable=true, vsync=true, minwidth=200, minheight=200})
 
   -- load fonts
   smallestFont = love.graphics.newFont("lib/kenpixel_mini.ttf", 6)
@@ -41,7 +41,7 @@ function love.load(arg)
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   Gamestate.registerEvents()
-  Gamestate.switch(game) -- swtich to menu screen
+  Gamestate.switch(menu) -- swtich to menu screen
 end
 
 function love:keypressed(key, code)
