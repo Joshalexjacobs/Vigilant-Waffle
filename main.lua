@@ -23,7 +23,7 @@ function copy(obj, seen)
 end
 
 function love.load(arg)
-  love.window.setMode(160*4, 144*3, {resizable=true, vsync=true, minwidth=200, minheight=200})
+  love.window.setMode(160*4, 144*2.97, {resizable=true, vsync=true, minwidth=200, minheight=200})
 
   -- load fonts
   smallestFont = love.graphics.newFont("lib/kenpixel_mini.ttf", 6)
@@ -33,7 +33,7 @@ function love.load(arg)
   love.graphics.setFont(smallFont)
 
   -- setup maid64
-  maid64.setup(64)
+  maid64.setup(96, 64)
 
   -- setup physics (1 meter = 64 pixels)
   love.physics.setMeter(32)
@@ -41,7 +41,7 @@ function love.load(arg)
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   Gamestate.registerEvents()
-  Gamestate.switch(menu) -- swtich to menu screen
+  Gamestate.switch(game) -- swtich to menu screen
 end
 
 function love:keypressed(key, code)

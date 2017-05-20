@@ -13,18 +13,22 @@ function game:enter()
   --let's create the ground
   objects.ground = {}
   objects.ground.body = love.physics.newBody(world, 64 / 2, 64 - 5 / 2)
-  objects.ground.shape = love.physics.newRectangleShape(64, 5)
+  objects.ground.shape = love.physics.newRectangleShape(128, 5)
   objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape); --attach shape to body
   objects.ground.fixture:setCategory(4)
 
   objects.wallLeft = {}
-  objects.wallLeft.body = love.physics.newBody(world, 64 + 2.5 / 2, 64 / 2)
+  --objects.wallLeft.body = love.physics.newBody(world, 64 + 2.5 / 2, 64 / 2)
+  --objects.wallLeft.body = love.physics.newBody(world, 82, 64 / 2)
+  objects.wallLeft.body = love.physics.newBody(world, 98, 64 / 2)
   objects.wallLeft.shape = love.physics.newRectangleShape(5, 64)
   objects.wallLeft.fixture = love.physics.newFixture(objects.wallLeft.body, objects.wallLeft.shape);
   objects.wallLeft.fixture:setCategory(3)
 
   objects.wallRight = {}
-  objects.wallRight.body = love.physics.newBody(world, -2.5 / 2, 64 / 2)
+  --objects.wallRight.body = love.physics.newBody(world, -2.5 / 2, 64 / 2)
+  --objects.wallRight.body = love.physics.newBody(world, -1, 64 / 2)
+  objects.wallRight.body = love.physics.newBody(world, -1, 64 / 2)
   objects.wallRight.shape = love.physics.newRectangleShape(5, 64)
   objects.wallRight.fixture = love.physics.newFixture(objects.wallRight.body, objects.wallRight.shape);
   objects.wallRight.fixture:setCategory(3)
@@ -39,13 +43,13 @@ function game:update(dt)
   player.update(dt)
   updateBullet(dt)
 
-  background.update(dt)
+  --background.update(dt)
 end
 
 function game:draw()
   maid64.start()
 
-  background.draw()
+  --background.draw()
 
   love.graphics.setColor(128, 17, 17)
   love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
