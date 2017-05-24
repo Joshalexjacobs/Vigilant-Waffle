@@ -5,7 +5,7 @@ local background = {
   x1 = 0,
   y1 = 0,
   x2 = 0,
-  y2 = -64,
+  y2 = -256,
   w = 0,
   h = 0,
   -- functions
@@ -13,7 +13,7 @@ local background = {
   update = nil,
   draw = nil,
   -- other
-  speed = 35
+  speed = 35 --35
 }
 
 background.load = function ()

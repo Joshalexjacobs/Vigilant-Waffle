@@ -3,6 +3,8 @@
 player = require "player"
 local background = require "scrollingBG"
 require "bullets"
+require "enemies"
+require "enemyDictionary"
 
 game = {}
 
@@ -35,21 +37,26 @@ function game:enter()
 
   player.load()
   loadBullets()
+  loadEnemyDictionary() -- loads a preset of every enemy, ready for instantiation
   background.load()
+
+  -- testing
+  addEnemy("skull", 10, 30)
 end
 
 function game:update(dt)
   world:update(dt)
   player.update(dt)
   updateBullet(dt)
+  updateEnemy(dt)
 
-  --background.update(dt)
+  background.update(dt)
 end
 
 function game:draw()
   maid64.start()
 
-  --background.draw()
+  background.draw()
 
   love.graphics.setColor(128, 17, 17)
   love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
@@ -61,6 +68,7 @@ function game:draw()
 
   drawBullet()
 
+  drawEnemy()
   --love.graphics.rectangle("fill", 10, 20, 2, 2)
 
   maid64.finish()
