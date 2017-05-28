@@ -141,7 +141,7 @@ player.update = function(dt)
     if contacts[i]:isTouching() and player.isFalling then
       local fixA, fixB = contacts[i]:getFixtures()
       --[[ If the player is touching the ground and is falling, ground the player ]]
-      if fixA:getCategory() == 4 or fixB:getCategory() == 4 then
+      if fixA:getCategory() == CATEGORY.GROUND or fixB:getCategory() == CATEGORY.GROUND then
         player.isFalling = false
         player.curAnim = 2
       end

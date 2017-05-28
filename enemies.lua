@@ -30,10 +30,18 @@ local enemy = {
 
 local enemies = {}
 
-function addEnemy(name, x, y)
+function addEnemy(name, x, y, dir)
   local newEnemy = getEnemy(name)
   if x then newEnemy.body:setX(x) end
   if y then newEnemy.body:setY(y) end
+  if dir then newEnemy.dir = dir end
+
+  -- temporary flip until i think of a better place for this 
+  if dir == -1 then
+    for i = 1, table.getn(newEnemy.animations) do
+      newEnemy.animations[i]:flipH()
+    end
+  end
 
   table.insert(enemies, newEnemy)
 end

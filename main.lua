@@ -11,7 +11,7 @@ require "states/game"
 
 world = love.physics.newWorld(0, 9.81 * 32, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
 
--- global function(s)
+--[[ Global Functions ]]
 function copy(obj, seen)
   if type(obj) ~= 'table' then return obj end
   if seen and seen[obj] then return seen[obj] end

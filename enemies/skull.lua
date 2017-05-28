@@ -9,7 +9,7 @@ local skull = {
     h = 12,
     offX = -4,
     offY = -2.5,
-    speed = 0,
+    speed = 8,
     dir = 1,
     -- skill assets
     spriteSheet = "img/enemies/skull.png",
@@ -50,6 +50,7 @@ skull.load = function(entity)
   }
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
+
   --[[ Setup Skull Timers ]]
   addTimer(0.0, "isHit", entity.timers)
 end
@@ -74,7 +75,9 @@ skull.behaviour = function(dt, entity)
       end
     end
 
-    --entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
+    entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
+    local dx, dy = entity.body:getLinearVelocity()
+    entity.body:setLinearVelocity(entity.speed * entity.dir, dy - 1)
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
@@ -103,9 +106,9 @@ skull.draw = function(entity)
   end
 
   if entity.body:isDestroyed() == false then
-    local x, y = entity.body:getWorldPoints(entity.shape:getPoints())
-    love.graphics.printf(entity.hp, x, 0, 100) -- testing
-    entity.animations[entity.curAnim]:draw(entity.spriteSheet, x + entity.offX, y + entity.offY)
+    --local x, y = entity.body:getWorldPoints(entity.shape:getPoints())
+    love.graphics.printf(entity.hp, entity.x, 0, 100) -- testing
+    entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
   end
 
   --love.graphics.setColor(255, 0, 0)

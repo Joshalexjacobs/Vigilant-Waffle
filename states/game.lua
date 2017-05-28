@@ -1,7 +1,7 @@
 --game.lua
 game = {}
 
---[[ CATEGORY GLOBALS ]]
+--[[ Category Globals ]]
 CATEGORY = {
   PLAYER = 1,
   BULLET = 2,
@@ -50,8 +50,8 @@ function game:enter()
   background.load()
 
   -- testing
-  addEnemy("skull", 20, 30)
-  addEnemy("skull", 90, 15)
+  --addEnemy("skull", 7, 0, 1)
+  --addEnemy("skull", 90, 0, -1)
 end
 
 function game:update(dt)
