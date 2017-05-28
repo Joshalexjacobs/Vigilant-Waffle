@@ -1,7 +1,9 @@
 local skull = require "enemies/skull"
+local oldOne = require "enemies/oldOne"
 
 local enemyDictionary = {
   {name = "skull", enemy = skull},
+  {name = "oldOne", enemy = oldOne},
 }
 
 function loadEnemyDictionary()

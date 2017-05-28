@@ -1,8 +1,8 @@
---skull.lua
+--oldOne.lua
 
-local skull = {
-    name = "skull",
-    hp = 10,
+local oldOne = {
+    name = "oldOne",
+    hp = 25,
     x = 5,
     y = 5,
     w = 6,
@@ -11,16 +11,16 @@ local skull = {
     offY = -2.5,
     speed = 8,
     dir = 1,
-    -- skull assets
-    spriteSheet = "img/enemies/skull.png",
+    -- oldOne assets
+    spriteSheet = "img/enemies/oldOne.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
-    -- skull physics objets
+    -- oldOne physics objets
     body = nil,
     shape = nil,
     fixture = nil,
-    -- skull functions
+    -- oldOne functions
     load = nil,
     behaviour = nil,
     draw = nil,
@@ -30,36 +30,37 @@ local skull = {
     category = CATEGORY.ENEMY
 }
 
-skull.load = function(entity)
+oldOne.load = function(entity)
   --[[ Physics setup ]]
-  entity.body = love.physics.newBody(world, 45, 25, "dynamic")
+  entity.body = love.physics.newBody(world, 45, 25, "dynamic") -- makes it unmoving
   entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
   entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
 
   entity.fixture:setCategory(entity.category)
   entity.body:setFixedRotation(true)
 
+  entity.body:setGravityScale(0)
+  entity.body:setMass(1000)
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
 
-  --[[ Load Skull images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 16, 32, 16, 0, 0, 0)
+  --[[ Load oldOne images/prep animations ]]
+  entity.spriteGrid = anim8.newGrid(16, 16, 48, 16, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
-    anim8.newAnimation(entity.spriteGrid("1-2", 1), 0.2) -- idle/float
+    anim8.newAnimation(entity.spriteGrid(1, 1, "2-3", 1, 2, 1), {2.0, 0.1, 0.1, 0.1}) -- idle/float
   }
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
 
-  --[[ Setup Skull Timers ]]
+  --[[ Setup oldOne Timers ]]
   addTimer(0.0, "isHit", entity.timers)
 end
 
-skull.behaviour = function(dt, entity)
-  --[[ Update skull anim ]]
+oldOne.behaviour = function(dt, entity)
+  --[[ Update old one anim ]]
   entity.animations[entity.curAnim]:update(dt)
 
-  --[[ Is skull shot? ]]
   if entity.body:isDestroyed() == false then
     local contacts = entity.body:getContactList()
 
@@ -77,37 +78,21 @@ skull.behaviour = function(dt, entity)
 
     entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
     local dx, dy = entity.body:getLinearVelocity()
-    entity.body:setLinearVelocity(entity.speed * entity.dir, dy - 1)
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
     entity.isHit = false
   end
 
-  --[[ Once skull dies ]]
-  if entity.hp <= 0 then
-    if checkTimer("playDead", entity.timers) == false then
-      addTimer(0.01, "playDead", entity.timers)
-      entity.body:destroy()
-    end
-
-    if updateTimer(dt, "playDead", entity.timers) then
-      entity.isDead = true
-    end
-  end
-
 end
 
-skull.draw = function(entity)
-
+oldOne.draw = function(entity)
   --[[ Draw ]]
   if entity.isHit then
     love.graphics.setColor(128, 17, 17)
   end
 
   if entity.body:isDestroyed() == false then
-    --local x, y = entity.body:getWorldPoints(entity.shape:getPoints())
-    love.graphics.printf(entity.hp, entity.x, 0, 100) -- testing
     entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
   end
 
@@ -116,4 +101,4 @@ skull.draw = function(entity)
   love.graphics.setColor(255, 255, 255)
 end
 
-return skull
+return oldOne
