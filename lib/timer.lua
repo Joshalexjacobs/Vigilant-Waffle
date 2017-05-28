@@ -52,6 +52,20 @@ function updateTimer(dt, name, timerList) -- update all existing timers
   end
 end
 
+function getTimerStatus(name, timerList) -- see if this timer has finished or not (no update)
+  if #timerList <= 0 then return false end
+
+  index = findTimer(name, timerList)
+
+  if index == 0 then return false end
+
+  if timerList[index].time <= 0 then
+    return true
+  elseif timerList[index].time > 0 then
+    return false
+  end
+end
+
 function deleteTimer(name, timerList)
   table.remove(timerList, findTimer(name, timerList))
 end

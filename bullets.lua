@@ -21,7 +21,7 @@ local bullet = {
   -- other
   timers = {},
   life = 1.0,
-  category = 2, -- 2
+  category = CATEGORY.BULLET, -- 2
   isDead = false
 }
 
@@ -47,12 +47,14 @@ function addBullet(x, y, dir)
   newBullet.fixture = love.physics.newFixture(newBullet.body, newBullet.shape, 1)
 
   newBullet.fixture:setCategory(newBullet.category)
-  newBullet.fixture:setMask(1, 2)
+  newBullet.fixture:setMask(CATEGORY.PLAYER, CATEGORY.BULLET)
   newBullet.body:setBullet(true)
   newBullet.body:setGravityScale(0)
 
   -- set up timers
   addTimer(newBullet.life, "life", newBullet.timers)
+
+  newBullet.fixture:setUserData(newBullet)
 
   table.insert(bulletList, newBullet)
 end
@@ -78,6 +80,13 @@ function updateBullet(dt)
         newBullet.isDead = true
         newBullet.curAnim = 2
         addTimer(0.5, "dead", newBullet.timers)
+        
+        -- testing out getUserData/getFixtures
+        --a, b = contacts[i]:getFixtures()
+        --if a:getUserData().name == "skull" then
+          --a:getUserData().damage(a:getUserData(), newBullet.isDead)
+        --end
+        --print(b:getUserData().isDead)
       end
     end
 
@@ -91,6 +100,7 @@ function updateBullet(dt)
 
     if checkTimer("dead", newBullet.timers) and updateTimer(dt, "dead", newBullet.timers) then
       newBullet.body:destroy()
+      --newBullet.fixture:destroy()
       table.remove(bulletList, i)
     end
 

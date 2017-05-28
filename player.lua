@@ -25,7 +25,7 @@ local player = {
   -- other
   timers = {},
   shootRate = 0.1,
-  category = 1,
+  category = CATEGORY.PLAYER,
   isFalling = true,
   isJumping = false -- determines player jump until reaching the peak
 }

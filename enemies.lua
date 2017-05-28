@@ -32,7 +32,8 @@ local enemies = {}
 
 function addEnemy(name, x, y)
   local newEnemy = getEnemy(name)
-  if x and y then newEnemy.x, newEnemy.y = x, y end
+  if x then newEnemy.body:setX(x) end
+  if y then newEnemy.body:setY(y) end
 
   table.insert(enemies, newEnemy)
 end
@@ -42,6 +43,10 @@ end
 function updateEnemy(dt)
   for i, newEnemy in ipairs(enemies) do
     newEnemy.behaviour(dt, newEnemy)
+
+    if newEnemy.isDead then
+      table.remove(enemies, i)
+    end
   end
 end
 

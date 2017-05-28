@@ -2,7 +2,7 @@
 
 local skull = {
     name = "skull",
-    hp = 3,
+    hp = 10,
     x = 5,
     y = 5,
     w = 6,
@@ -26,42 +26,91 @@ local skull = {
     draw = nil,
     -- other
     timers = {},
-    category = 5 -- category 5 = enemies
+    isDead = false,
+    category = CATEGORY.ENEMY
 }
 
-skull.load = function()
+skull.load = function(entity)
   --[[ Physics setup ]]
-  skull.body = love.physics.newBody(world, 45, 25, "dynamic")
-  skull.shape = love.physics.newRectangleShape(0, 0, skull.w, skull.h)
-  skull.fixture = love.physics.newFixture(skull.body, skull.shape, 1)
+  entity.body = love.physics.newBody(world, 45, 25, "dynamic")
+  entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
+  entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
 
-  skull.fixture:setCategory(skull.category)
-  skull.body:setFixedRotation(true)
+  entity.fixture:setCategory(entity.category)
+  entity.body:setFixedRotation(true)
 
   --[[ Damping (decelaration) ]]
-  skull.body:setLinearDamping(0.05)
+  entity.body:setLinearDamping(0.05)
 
   --[[ Load Skull images/prep animations ]]
-  skull.spriteGrid = anim8.newGrid(16, 16, 32, 16, 0, 0, 0)
-  skull.spriteSheet = maid64.newImage(skull.spriteSheet)
-  skull.animations = {
-    anim8.newAnimation(skull.spriteGrid("1-2", 1), 0.2) -- idle/float
+  entity.spriteGrid = anim8.newGrid(16, 16, 32, 16, 0, 0, 0)
+  entity.spriteSheet = maid64.newImage(entity.spriteSheet)
+  entity.animations = {
+    anim8.newAnimation(entity.spriteGrid("1-2", 1), 0.2) -- idle/float
   }
+
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
+  --[[ Setup Skull Timers ]]
+  addTimer(0.0, "isHit", entity.timers)
 end
 
 skull.behaviour = function(dt, entity)
   --[[ Update skull anim ]]
   entity.animations[entity.curAnim]:update(dt)
+
+  --[[ Is skull shot? ]]
+  if entity.body:isDestroyed() == false then
+    local contacts = entity.body:getContactList()
+
+    for i = 1, #contacts do
+      if contacts[i]:isTouching() then
+        b, a = contacts[i]:getFixtures()
+        if a:getCategory() == CATEGORY.BULLET and a:isDestroyed() == false then
+          entity.isHit = true
+          resetTimer(0.05, "isHit", entity.timers)
+          entity.hp = entity.hp - 1
+          a:destroy()
+        end
+      end
+    end
+
+    --entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
+  end
+
+  if updateTimer(dt, "isHit", entity.timers) then
+    entity.isHit = false
+  end
+
+  --[[ Once skull dies ]]
+  if entity.hp <= 0 then
+    if checkTimer("playDead", entity.timers) == false then
+      addTimer(0.01, "playDead", entity.timers)
+      entity.body:destroy()
+    end
+
+    if updateTimer(dt, "playDead", entity.timers) then
+      entity.isDead = true
+    end
+  end
+
 end
 
 skull.draw = function(entity)
+
   --[[ Draw ]]
-  local x, y = entity.body:getWorldPoints(entity.shape:getPoints())
-  entity.animations[entity.curAnim]:draw(entity.spriteSheet, x + entity.offX, y + entity.offY)
+  if entity.isHit then
+    love.graphics.setColor(128, 17, 17)
+  end
+
+  if entity.body:isDestroyed() == false then
+    local x, y = entity.body:getWorldPoints(entity.shape:getPoints())
+    love.graphics.printf(entity.hp, x, 0, 100) -- testing
+    entity.animations[entity.curAnim]:draw(entity.spriteSheet, x + entity.offX, y + entity.offY)
+  end
 
   --love.graphics.setColor(255, 0, 0)
   --love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
-  --love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(255, 255, 255)
 end
 
 return skull

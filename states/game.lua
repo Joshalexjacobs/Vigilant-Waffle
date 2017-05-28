@@ -1,4 +1,14 @@
 --game.lua
+game = {}
+
+--[[ CATEGORY GLOBALS ]]
+CATEGORY = {
+  PLAYER = 1,
+  BULLET = 2,
+  WALL = 3,
+  GROUND = 4,
+  ENEMY = 5
+}
 
 player = require "player"
 local background = require "scrollingBG"
@@ -6,7 +16,6 @@ require "bullets"
 require "enemies"
 require "enemyDictionary"
 
-game = {}
 
 objects = {}
 bg = {}
@@ -41,7 +50,8 @@ function game:enter()
   background.load()
 
   -- testing
-  addEnemy("skull", 10, 30)
+  addEnemy("skull", 20, 30)
+  addEnemy("skull", 90, 15)
 end
 
 function game:update(dt)
