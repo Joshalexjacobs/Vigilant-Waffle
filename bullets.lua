@@ -7,14 +7,14 @@ local bullet = {
   h = 2,
   offX = -3,
   offY = -2,
-  speedX = 50, -- 50
-  dir = 1,
+  speedX = 250, -- 50
+  dir = {x = 0, y = 0},
   -- basic player assets
   spriteSheet = "img/bullet.png",
   spriteGrid = nil,
   animations = {},
   curAnim = 1,
-  -- player physics objects
+  -- bullet physics objects
   body = nil,
   shape = nil,
   fixture = nil,
@@ -39,7 +39,7 @@ end
 
 function addBullet(x, y, dir)
   local newBullet = copy(bullet, newBullet)
-  newBullet.x, newBullet.y, newBullet.dir = x, y, dir
+  newBullet.x, newBullet.y, newBullet.dir.x, newBullet.dir.y = x, y, dir.x, dir.y
 
   -- physics
   newBullet.body = love.physics.newBody(world, x, y, "dynamic")
@@ -63,15 +63,18 @@ function updateBullet(dt)
   for i, newBullet in ipairs(bulletList) do
     newBullet.animations[newBullet.curAnim]:update(dt)
 
-    newBullet.body:applyForce(newBullet.speedX * newBullet.dir, 0)
+    --newBullet.body:setLinearVelocity(newBullet.speedX * newBullet.dir, 0)
+    newBullet.body:setLinearVelocity(newBullet.speedX * newBullet.dir.x, newBullet.speedX * newBullet.dir.y)
 
     local dx, dy = newBullet.body:getLinearVelocity()
 
+    --[[
     if dx > newBullet.speedX and newBullet.dir == 1 then
       newBullet.body:setLinearVelocity(newBullet.speedX, dy)
     elseif dx < -newBullet.speedX and newBullet.dir == -1 then
       newBullet.body:setLinearVelocity(-newBullet.speedX, dy)
     end
+    --]]
 
     local contacts = newBullet.body:getContactList()
 
@@ -80,7 +83,7 @@ function updateBullet(dt)
         newBullet.isDead = true
         newBullet.curAnim = 2
         addTimer(0.5, "dead", newBullet.timers)
-        
+
         -- testing out getUserData/getFixtures
         --a, b = contacts[i]:getFixtures()
         --if a:getUserData().name == "skull" then

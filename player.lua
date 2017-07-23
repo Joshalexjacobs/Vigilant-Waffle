@@ -8,9 +8,11 @@ local player = {
   offY = -2,
   speed = 30,
   jumpStrength = -70, -- determines height of player jump
-  dir = 1, -- 1 = right, -1 = left
+  --dir = 1, -- 1 = right, -1 = left
+  dir = {x = 1, y = 0},
+  --dirY = 0,
   -- basic player assets
-  spriteSheet = "img/player2Jump.png",
+  spriteSheet = "img/player2Angle.png", --spriteSheet = "img/player2Jump.png",
   spriteGrid = nil,
   animations = {},
   curAnim = 1,
@@ -43,13 +45,14 @@ player.load = function()
   player.body:setLinearDamping(0.05)
 
   --[[ Player animations/sprites]]
-  player.spriteGrid = anim8.newGrid(8, 16, 24, 64, 0, 0, 0)
+  player.spriteGrid = anim8.newGrid(8, 16, 24, 96, 0, 0, 0)
   player.spriteSheet = maid64.newImage(player.spriteSheet)
   player.animations = {
     anim8.newAnimation(player.spriteGrid(1, 1), 0.5), -- 1 idle
     anim8.newAnimation(player.spriteGrid("1-3", "2-3"), 0.15), -- 2 walk
     anim8.newAnimation(player.spriteGrid(1, 4), 0.15), -- 3 falling
-    anim8.newAnimation(player.spriteGrid("2-3", 4), {0.125, 0.10}, "pauseAtEnd") -- 4 jumping
+    anim8.newAnimation(player.spriteGrid("2-3", 4), {0.125, 0.10}, "pauseAtEnd"), -- 4 jumping
+    anim8.newAnimation(player.spriteGrid("1-3", "5-6"), 0.15), -- 5 angleShot
   }
 
   --[[ Set up player timers ]]
@@ -62,7 +65,7 @@ local function flip(player)
   for i = 1, table.getn(player.animations) do
     player.animations[i]:flipH()
   end
-  player.dir = -player.dir -- flip their direction as well
+  player.dir.x = -player.dir.x -- flip their direction as well
 end
 
 player.update = function(dt)
@@ -75,7 +78,7 @@ player.update = function(dt)
     if player.isFalling == false then
       player.curAnim = 2
     end
-    if player.dir ~= -1 then
+    if player.dir.x ~= -1 then
       flip(player)
     end
   elseif love.keyboard.isDown('d') and love.keyboard.isDown('a') == false then
@@ -83,18 +86,33 @@ player.update = function(dt)
     if player.isFalling == false then
       player.curAnim = 2
     end
-    if player.dir ~= 1 then
+    if player.dir.x ~= 1 then
       flip(player)
     end
   end
+
+
+  -- this needs to go somewhere to make the angled shot anim work
+  if love.keyboard.isDown('w') then
+    player.curAnim = 5
+    player.dir.y = -1
+  else
+    player.dir.y = 0
+  end
+
 
   --[[ Player Shoot ]]
   if love.keyboard.isDown('m') and updateTimer(dt, "shoot", player.timers) then
     local x, y = player.body:getWorldPoints(player.shape:getPoints())
     local offD = 0
-    if player.dir == 1 then offD = 5 else offD = -2 end
+    if player.dir.x == 1 then offD = 5 else offD = -2 end
 
-    addBullet(x + offD, y + 3.5, player.dir)
+
+    if player.dir.y == 0 then
+      addBullet(x + offD, y + 3.5, player.dir)
+    elseif player.dir.y == -1 then
+      addBullet(x + offD, y - 1, player.dir)
+    end
     resetTimer(player.shootRate, "shoot", player.timers)
   end
 
@@ -116,9 +134,9 @@ player.update = function(dt)
   end
 
   --[[ Move player left/right depending on dx velocity and their direction ]]
-  if dx > player.speed and player.dir == 1 then
+  if dx > player.speed and player.dir.x == 1 then
     player.body:setLinearVelocity(player.speed, dy)
-  elseif dx < -player.speed and player.dir == -1 then
+  elseif dx < -player.speed and player.dir.x == -1 then
     player.body:setLinearVelocity(-player.speed, dy)
   end
 
