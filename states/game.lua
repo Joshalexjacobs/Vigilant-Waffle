@@ -51,9 +51,10 @@ function game:enter()
   background.load()
 
   -- testing
-  addEnemy("skull", 7, 0, 1)
+  --addEnemy("skull", 7, 0, 1)
   --addEnemy("oldOne", 25, 30, 1)
-  addEnemy("skull", 90, 0, -1)
+  addEnemy("oldOne", 25, 30, 1)
+  --addEnemy("skull", 90, 0, -1)
 end
 
 function game:update(dt)
@@ -82,9 +83,11 @@ function game:draw()
 
   player.draw()
 
+  drawEnemy()
+
   drawBullet()
 
-  drawEnemy()
+
   --love.graphics.rectangle("fill", 10, 20, 2, 2)
 
   maid64.finish()

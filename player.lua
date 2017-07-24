@@ -91,15 +91,13 @@ player.update = function(dt)
     end
   end
 
-
   -- this needs to go somewhere to make the angled shot anim work
-  if love.keyboard.isDown('w') then
+  if love.keyboard.isDown('w') and (love.keyboard.isDown('a') or love.keyboard.isDown('d')) then
     player.curAnim = 5
     player.dir.y = -1
   else
     player.dir.y = 0
   end
-
 
   --[[ Player Shoot ]]
   if love.keyboard.isDown('m') and updateTimer(dt, "shoot", player.timers) then

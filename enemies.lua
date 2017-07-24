@@ -1,4 +1,4 @@
---enemies.lua
+--enemiesOne.lua
 
 local enemy = {
   name = "",
@@ -28,7 +28,8 @@ local enemy = {
   timers = {}
 }
 
-local enemies = {}
+local enemiesOne = {}
+local enemiesTwo = {}
 
 function addEnemy(name, x, y, dir)
   local newEnemy = getEnemy(name)
@@ -36,30 +37,46 @@ function addEnemy(name, x, y, dir)
   if y then newEnemy.body:setY(y) end
   if dir then newEnemy.dir = dir end
 
-  -- temporary flip until i think of a better place for this 
+  -- temporary flip until i think of a better place for this
   if dir == -1 then
     for i = 1, table.getn(newEnemy.animations) do
       newEnemy.animations[i]:flipH()
     end
   end
 
-  table.insert(enemies, newEnemy)
+  if newEnemy.layer == 1 then
+    table.insert(enemiesOne, newEnemy)
+  else
+    table.insert(enemiesTwo, newEnemy)
+  end
 end
 
--- function removeAllEnemies() end
+-- function removeAllenemiesOne() end
 
 function updateEnemy(dt)
-  for i, newEnemy in ipairs(enemies) do
+  for i, newEnemy in ipairs(enemiesOne) do
     newEnemy.behaviour(dt, newEnemy)
 
     if newEnemy.isDead then
-      table.remove(enemies, i)
+      table.remove(enemiesOne, i)
+    end
+  end
+
+  for i, newEnemy in ipairs(enemiesTwo) do
+    newEnemy.behaviour(dt, newEnemy)
+
+    if newEnemy.isDead then
+      table.remove(enemiesTwo, i)
     end
   end
 end
 
 function drawEnemy()
-  for i, newEnemy in ipairs(enemies) do
+  for i, newEnemy in ipairs(enemiesOne) do
+    newEnemy.draw(newEnemy)
+  end
+
+  for i, newEnemy in ipairs(enemiesTwo) do
     newEnemy.draw(newEnemy)
   end
 end

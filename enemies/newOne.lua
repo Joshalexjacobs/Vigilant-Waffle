@@ -1,26 +1,26 @@
---oldOne.lua
+--newOne.lua -- soon to be renamed saplings
 
-local oldOne = {
-    name = "oldOne",
-    hp = 25,
-    x = 5,
-    y = 5,
+local newOne = {
+    name = "newOne",
+    hp = 15,
+    x = -50,
+    y = -50,
     w = 6,
-    h = 12,
-    offX = -4,
-    offY = -2.5,
-    speed = 8,
+    h = 8,
+    offX = -5,
+    offY = -4,
+    speed = 14,
     dir = 1,
-    -- oldOne assets
-    spriteSheet = "img/enemies/oldOne.png",
+    -- newOne assets
+    spriteSheet = "img/enemies/newOne.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
-    -- oldOne physics objets
+    -- newOne physics objets
     body = nil,
     shape = nil,
     fixture = nil,
-    -- oldOne functions
+    -- newOne functions
     load = nil,
     behaviour = nil,
     draw = nil,
@@ -28,10 +28,10 @@ local oldOne = {
     timers = {},
     isDead = false,
     category = CATEGORY.ENEMY,
-    layer = 2,
+    layer = 1,
 }
 
-oldOne.load = function(entity)
+newOne.load = function(entity)
   --[[ Physics setup ]]
   entity.body = love.physics.newBody(world, 45, 25, "dynamic") -- makes it unmoving
   entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
@@ -40,31 +40,38 @@ oldOne.load = function(entity)
   entity.fixture:setCategory(entity.category)
   entity.body:setFixedRotation(true)
 
-  entity.body:setGravityScale(0)
+  --entity.body:setGravityScale(0)
   entity.body:setMass(1000)
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
 
-  --[[ Load oldOne images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 16, 48, 32, 0, 0, 0)
+  --[[ Load newOne images/prep animations ]]
+  entity.spriteGrid = anim8.newGrid(16, 16, 48, 96, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
-    anim8.newAnimation(entity.spriteGrid(1, 1, "2-3", 1, 2, 1), {2.0, 0.1, 0.1, 0.1}), -- 1 idle/float
-    anim8.newAnimation(entity.spriteGrid("1-2", 2), 0.5, "pauseAtEnd"), -- 2 spawn sapling
-    anim8.newAnimation(entity.spriteGrid("2-1", 2, 1, 1), 0.5, "pauseAtEnd"), -- 3 back to idle
+    anim8.newAnimation(entity.spriteGrid(1, 1), 0.5), -- 1 fall
+    anim8.newAnimation(entity.spriteGrid("2-3", 1, 2, 1, "1-3", "2-3", "1-3", 4), 0.125, "pauseAtEnd"), -- 2 land
+    anim8.newAnimation(entity.spriteGrid("1-3", 5, 1, 6), 0.1), -- 3 walk
   }
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
 
-  --[[ Setup oldOne Timers ]]
+  --[[ Setup newOne Timers ]]
   addTimer(0.0, "isHit", entity.timers)
-  addTimer(1.0, "spawn", entity.timers)
-  addTimer(1.0, "spawning", entity.timers)
-  addTimer(1.0, "spawned", entity.timers)
+  addTimer(1.5, "land", entity.timers)
+  addTimer(0.0, "flip", entity.timers) -- might need this
 end
 
-oldOne.behaviour = function(dt, entity)
-  --[[ Update old one anim ]]
+--[[ flip ]]
+local function flip(entity)
+  for i = 1, table.getn(entity.animations) do
+    entity.animations[i]:flipH()
+  end
+  entity.dir = -entity.dir -- flip their direction as well
+end
+
+newOne.behaviour = function(dt, entity)
+  --[[ Update newOne anim ]]
   entity.animations[entity.curAnim]:update(dt)
 
   if entity.body:isDestroyed() == false then
@@ -78,30 +85,37 @@ oldOne.behaviour = function(dt, entity)
           resetTimer(0.05, "isHit", entity.timers)
           entity.hp = entity.hp - 1
           a:destroy()
+        elseif entity.curAnim == 1 and (a:getCategory() == CATEGORY.GROUND or b:getCategory() == CATEGORY.GROUND) then
+          entity.curAnim = 2
+        elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) == true then
+          flip(entity)
+          resetTimer(0.20, "flip", entity.timers)
         end
       end
+
+      if entity.curAnim == 3 then
+        entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
+        local dx, dy = entity.body:getLinearVelocity()
+        entity.body:setLinearVelocity(entity.speed * entity.dir, dy)
+      end
+
     end
 
     entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
     local dx, dy = entity.body:getLinearVelocity()
+  end
 
-    if updateTimer(dt, "spawn", entity.timers) then
-      entity.curAnim = 2
-      if updateTimer(dt, "spawning", entity.timers) and entity.curAnim then
-        addEnemy("newOne", entity.x - entity.offX, entity.y - entity.offY, 1)
-        entity.curAnim = 3
-        resetTimer(7.5, "spawn", entity.timers)
-        resetTimer(1.0, "spawning", entity.timers)
-      end
+  if entity.curAnim == 2 then
+    if updateTimer(dt, "land", entity.timers) then
+      entity.curAnim = 3
     end
-
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
     entity.isHit = false
   end
 
-  --[[ Once oldOne dies ]]
+  --[[ Once newOne dies ]]
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
@@ -115,7 +129,7 @@ oldOne.behaviour = function(dt, entity)
 
 end
 
-oldOne.draw = function(entity)
+newOne.draw = function(entity)
   --[[ Draw ]]
   if entity.isHit then
     love.graphics.setColor(128, 17, 17)
@@ -130,4 +144,4 @@ oldOne.draw = function(entity)
   love.graphics.setColor(255, 255, 255)
 end
 
-return oldOne
+return newOne
