@@ -39,6 +39,7 @@ oldOne.load = function(entity)
   entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
 
   entity.fixture:setCategory(entity.category)
+  entity.fixture:setUserData(entity)
   entity.body:setFixedRotation(true)
 
   entity.body:setGravityScale(0)

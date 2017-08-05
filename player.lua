@@ -45,6 +45,7 @@ player.load = function()
   player.fixture = love.physics.newFixture(player.body, player.shape, 1)
 
   player.fixture:setCategory(player.category)
+  player.fixture:setUserData(player)
   player.body:setFixedRotation(true)
 
   --[[ Damping (decelaration) ]]
@@ -74,6 +75,14 @@ local function flip(player)
     player.animations[i]:flipH()
   end
   player.dir.x = -player.dir.x -- flip their direction as well
+end
+
+local function jump(player)
+  player.curAnim = 4
+  player.isJumping = true
+  player.isFalling = true
+  player.body:applyForce(0, player.jumpStrength)
+  resetTimer(0.3, "jump", player.timers)
 end
 
 player.update = function(dt)
@@ -137,11 +146,12 @@ player.update = function(dt)
 
   --[[ Player Jump ]]
   if love.keyboard.isDown('n') and player.isFalling == false then -- and player is touching the ground
-    player.curAnim = 4
-    player.isJumping = true
-    player.isFalling = true
-    player.body:applyForce(0, player.jumpStrength)
-    resetTimer(0.3, "jump", player.timers)
+    -- player.curAnim = 4
+    -- player.isJumping = true
+    -- player.isFalling = true
+    -- player.body:applyForce(0, player.jumpStrength)
+    -- resetTimer(0.3, "jump", player.timers)
+    jump(player)
   end
 
   --[[ Once player has reached the peak, begin free falling ]]
@@ -182,6 +192,20 @@ player.update = function(dt)
       if fixA:getCategory() == CATEGORY.GROUND or fixB:getCategory() == CATEGORY.GROUND then
         player.isFalling = false
         player.curAnim = 2
+      elseif fixB:getCategory() == CATEGORY.ENEMY then
+        if fixB:getUserData().name == "newOne" then
+          local entity = fixB:getUserData()
+          local myX, myY = fixB:getBody():getWorldCenter() -- newOne
+          local bodX, bodY = fixA:getBody():getWorldCenter() -- player
+
+          if bodY < myY - entity.h / 2 and bodX >= myX - entity.w - 1 and bodX <= myX + entity.w - 1 then
+            player.jumpStrength = -100
+            jump(player)
+            player.jumpStrength = -75
+          else
+            print("kill")
+          end
+        end
       end
     end
   end

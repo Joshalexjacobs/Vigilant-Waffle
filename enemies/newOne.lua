@@ -38,6 +38,7 @@ newOne.load = function(entity)
   entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
 
   entity.fixture:setCategory(entity.category)
+  entity.fixture:setUserData(entity)
   entity.body:setFixedRotation(true)
 
   --entity.body:setGravityScale(0)
@@ -90,6 +91,15 @@ newOne.behaviour = function(dt, entity)
         elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) == true then
           flip(entity)
           resetTimer(0.20, "flip", entity.timers)
+        -- elseif b:getCategory() == CATEGORY.PLAYER then
+        --   local myX, myY = a:getBody():getWorldCenter() -- newOne
+        --   local bodX, bodY = b:getBody():getWorldCenter() -- player
+        --
+        --   if bodY < myY - entity.h / 2 and bodX >= myX - entity.w / 3 and bodX <= myX + entity.w / 3 then
+        --     -- print("bounce")
+        --   else
+        --     -- print("kill")
+        --   end
         end
       end
 
@@ -139,8 +149,8 @@ newOne.draw = function(entity)
     entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
   end
 
-  --love.graphics.setColor(255, 0, 0)
-  --love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
+  love.graphics.setColor(255, 0, 0)
+  love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
   love.graphics.setColor(255, 255, 255)
 end
 

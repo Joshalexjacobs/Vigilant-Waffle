@@ -53,7 +53,8 @@ function game:enter()
   -- testing
   --addEnemy("skull", 7, 0, 1)
   --addEnemy("oldOne", 25, 30, 1)
-  addEnemy("oldOne", 25, 75, 1)
+  --addEnemy("oldOne", 25, 75, 1)
+  addEnemy("newOne", 25, 75, 1)
   --addEnemy("skull", 90, 0, -1)
 end
 
@@ -81,9 +82,9 @@ function game:draw()
 
   --love.graphics.draw(objects.ground.sprite, 0, 58) -- crappy platform i made
 
-  player.draw()
-
   drawEnemy()
+
+  player.draw()
 
   drawBullet()
 
