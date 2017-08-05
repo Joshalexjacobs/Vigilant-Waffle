@@ -1,10 +1,5 @@
 --main.lua
 
---[[
-TODO:
-- Scale up the minimum resolution in order to add smaller/more detailed animations
-]]
-
 Gamestate = require "lib/gamestate"
 anim8 = require "lib/anim8"
 require "lib/maid64"
