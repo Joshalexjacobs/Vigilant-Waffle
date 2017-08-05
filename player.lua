@@ -2,7 +2,7 @@
 
 --[[
 TODO:
-- Add upwards shot (animation/shot itself)
+- Add bouncing when jumping on the heads of some enemies
 ]]
 
 local player = {
