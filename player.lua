@@ -1,4 +1,10 @@
 --player.lua
+
+--[[
+TODO:
+- Add upwards shot (animation/shot itself)
+]]
+
 local player = {
   x = 25,
   y = 16,
