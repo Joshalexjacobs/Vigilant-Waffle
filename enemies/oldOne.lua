@@ -1,5 +1,12 @@
 --oldOne.lua
 
+--[[
+TODO:
+- Add float
+- Reset animations after newOne is spawned
+- Add slow horizontal movement (pause when spawning)
+]]
+
 local oldOne = {
     name = "oldOne",
     hp = 25,
