@@ -40,7 +40,7 @@ local player = {
 
 player.load = function()
   --[[ Physics setup ]]
-  player.body = love.physics.newBody(world, 45, 25, "dynamic")
+  player.body = love.physics.newBody(world, 95, 75, "dynamic")
   player.shape = love.physics.newRectangleShape(0, 0, player.w, player.h)
   player.fixture = love.physics.newFixture(player.body, player.shape, 1)
 
