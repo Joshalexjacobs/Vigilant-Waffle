@@ -48,6 +48,9 @@ end
 function love:keypressed(key, code)
   if key == 'escape' then -- quit on escape
     love.event.quit()
+  elseif key == 'f' then
+    local fullscreen, ftype = love.window.getFullscreen()
+    love.window.setFullscreen(not fullscreen)
   end
 end
 

@@ -13,12 +13,12 @@ local player = {
   offX = -2.5,
   offY = -2,
   speed = 30,
-  jumpStrength = -70, -- determines height of player jump
+  jumpStrength = -75, -- determines height of player jump
   --dir = 1, -- 1 = right, -1 = left
   dir = {x = 1, y = 0},
   --dirY = 0,
   -- basic player assets
-  spriteSheet = "img/player2Angle.png", --spriteSheet = "img/player2Jump.png",
+  spriteSheet = "img/player2Up.png", --spriteSheet = "img/player2Jump.png",
   spriteGrid = nil,
   animations = {},
   curAnim = 1,
@@ -51,14 +51,16 @@ player.load = function()
   player.body:setLinearDamping(0.05)
 
   --[[ Player animations/sprites]]
-  player.spriteGrid = anim8.newGrid(8, 16, 24, 96, 0, 0, 0)
+  player.spriteGrid = anim8.newGrid(8, 16, 24, 112, 0, 0, 0)
   player.spriteSheet = maid64.newImage(player.spriteSheet)
   player.animations = {
+                                    -- col, row
     anim8.newAnimation(player.spriteGrid(1, 1), 0.5), -- 1 idle
     anim8.newAnimation(player.spriteGrid("1-3", "2-3"), 0.15), -- 2 walk
     anim8.newAnimation(player.spriteGrid(1, 4), 0.15), -- 3 falling
     anim8.newAnimation(player.spriteGrid("2-3", 4), {0.125, 0.10}, "pauseAtEnd"), -- 4 jumping
     anim8.newAnimation(player.spriteGrid("1-3", "5-6"), 0.15), -- 5 angleShot
+    anim8.newAnimation(player.spriteGrid(1, 1, 2, 1), 0.09), -- 6 idle shot
   }
 
   --[[ Set up player timers ]]
@@ -98,9 +100,18 @@ player.update = function(dt)
   end
 
   -- this needs to go somewhere to make the angled shot anim work
-  if love.keyboard.isDown('w') and (love.keyboard.isDown('a') or love.keyboard.isDown('d')) then
+  if love.keyboard.isDown('w') and (love.keyboard.isDown('a') or love.keyboard.isDown('d'))
+    and love.keyboard.isDown('m') then
     player.curAnim = 5
     player.dir.y = -1
+  -- elseif love.keyboard.isDown('w') and not (love.keyboard.isDown('a') or love.keyboard.isDown('d')) then
+  --   if love.keyboard.isDown('m') then
+  --     player.curAnim = 6
+  --   else
+  --     player.curAnim = 1
+  --     player.dir.y = -1
+  --     -- player.dir.x = 0
+  --   end
   else
     player.dir.y = 0
   end
@@ -111,11 +122,12 @@ player.update = function(dt)
     local offD = 0
     if player.dir.x == 1 then offD = 5 else offD = -2 end
 
-
     if player.dir.y == 0 then
       addBullet(x + offD, y + 3.5, player.dir)
     elseif player.dir.y == -1 then
       addBullet(x + offD, y - 1, player.dir)
+    elseif player.dir.y == 1 then
+      addBullet(x + offD, y, player.dir)
     end
     resetTimer(player.shootRate, "shoot", player.timers)
   end
@@ -145,8 +157,12 @@ player.update = function(dt)
   end
 
   --[[ Play idle animation ]]
-  if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false then
+  if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
+    and not love.keyboard.isDown('m') then
     player.curAnim = 1
+  elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
+    and love.keyboard.isDown('m') then
+    player.curAnim = 6
   end
 
   --[[ Play falling animation ]]
