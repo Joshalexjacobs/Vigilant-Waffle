@@ -59,7 +59,7 @@ newOne.load = function(entity)
   --[[ Setup newOne Timers ]]
   addTimer(0.0, "isHit", entity.timers)
   addTimer(1.5, "land", entity.timers)
-  addTimer(0.0, "flip", entity.timers) -- might need this
+  addTimer(0.0, "flip", entity.timers)
 end
 
 --[[ flip ]]

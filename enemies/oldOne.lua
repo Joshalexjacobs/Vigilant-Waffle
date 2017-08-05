@@ -1,22 +1,15 @@
 --oldOne.lua
 
---[[
-TODO:
-- Add float
-- Reset animations after newOne is spawned
-- Add slow horizontal movement (pause when spawning)
-]]
-
 local oldOne = {
     name = "oldOne",
     hp = 25,
     x = 5,
     y = 5,
-    w = 6,
+    w = 12,
     h = 12,
-    offX = -4,
+    offX = -2,
     offY = -2.5,
-    speed = 8,
+    speed = 150,
     dir = 1,
     -- oldOne assets
     spriteSheet = "img/enemies/oldOne.png",
@@ -36,6 +29,7 @@ local oldOne = {
     isDead = false,
     category = CATEGORY.ENEMY,
     layer = 2,
+    speedH = 3,
 }
 
 oldOne.load = function(entity)
@@ -67,6 +61,17 @@ oldOne.load = function(entity)
   addTimer(0.0, "isHit", entity.timers)
   addTimer(1.0, "spawn", entity.timers)
   addTimer(1.0, "spawning", entity.timers)
+  addTimer(0.0, "backToIdle", entity.timers)
+  addTimer(0.5, "float", entity.timers)
+  addTimer(0.0, "flip", entity.timers)
+end
+
+--[[ flip ]]
+local function flip(entity)
+  for i = 1, table.getn(entity.animations) do
+    entity.animations[i]:flipH()
+  end
+  entity.dir = -entity.dir -- flip their direction as well
 end
 
 oldOne.behaviour = function(dt, entity)
@@ -84,6 +89,9 @@ oldOne.behaviour = function(dt, entity)
           resetTimer(0.05, "isHit", entity.timers)
           entity.hp = entity.hp - 1
           a:destroy()
+        elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) == true then
+          flip(entity)
+          resetTimer(0.20, "flip", entity.timers)
         end
       end
     end
@@ -94,11 +102,28 @@ oldOne.behaviour = function(dt, entity)
     if updateTimer(dt, "spawn", entity.timers) then
       entity.curAnim = 2
       if updateTimer(dt, "spawning", entity.timers) and entity.curAnim then
-        addEnemy("newOne", entity.x - entity.offX, entity.y - entity.offY, 1)
+        addEnemy("newOne", entity.x+6, entity.y+4, 1)
         entity.curAnim = 3
         resetTimer(7.5, "spawn", entity.timers)
         resetTimer(1.0, "spawning", entity.timers)
+        resetTimer(1.5, "backToIdle", entity.timers)
       end
+    end
+
+    if entity.curAnim == 3 and updateTimer(dt, "backToIdle", entity.timers) then
+      entity.curAnim = 1
+      entity.animations[2]:gotoFrame(1)
+      entity.animations[2]:resume()
+      entity.animations[3]:gotoFrame(1)
+      entity.animations[3]:resume()
+    end
+
+    -- basic vertical float/horizontal movement:
+    entity.body:setLinearVelocity(entity.speedH * entity.dir, -math.sin(entity.speed))
+
+    if updateTimer(dt, "float", entity.timers) then
+      resetTimer(1.0, "float", entity.timers)
+      entity.speed = -entity.speed
     end
 
   end
