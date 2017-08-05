@@ -23,8 +23,8 @@ bg = {}
 function game:enter()
   --let's create the ground
   objects.ground = {}
-  objects.ground.body = love.physics.newBody(world, 64 / 2, 64 - 5 / 2)
-  objects.ground.shape = love.physics.newRectangleShape(128, 5)
+  objects.ground.body = love.physics.newBody(world, 128 / 2, 128 - 5 / 2)
+  objects.ground.shape = love.physics.newRectangleShape(128 * 2, 5)
   objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape); --attach shape to body
   objects.ground.sprite = maid64.newImage("img/platform.png")
   objects.ground.fixture:setCategory(4)
@@ -32,16 +32,16 @@ function game:enter()
   objects.wallLeft = {}
   --objects.wallLeft.body = love.physics.newBody(world, 64 + 2.5 / 2, 64 / 2)
   --objects.wallLeft.body = love.physics.newBody(world, 82, 64 / 2)
-  objects.wallLeft.body = love.physics.newBody(world, 98, 64 / 2)
-  objects.wallLeft.shape = love.physics.newRectangleShape(5, 64)
+  objects.wallLeft.body = love.physics.newBody(world, 194, 128 / 2)
+  objects.wallLeft.shape = love.physics.newRectangleShape(5, 128)
   objects.wallLeft.fixture = love.physics.newFixture(objects.wallLeft.body, objects.wallLeft.shape);
   objects.wallLeft.fixture:setCategory(3)
 
   objects.wallRight = {}
   --objects.wallRight.body = love.physics.newBody(world, -2.5 / 2, 64 / 2)
   --objects.wallRight.body = love.physics.newBody(world, -1, 64 / 2)
-  objects.wallRight.body = love.physics.newBody(world, -1, 64 / 2)
-  objects.wallRight.shape = love.physics.newRectangleShape(5, 64)
+  objects.wallRight.body = love.physics.newBody(world, -1, 128 / 2)
+  objects.wallRight.shape = love.physics.newRectangleShape(5, 128)
   objects.wallRight.fixture = love.physics.newFixture(objects.wallRight.body, objects.wallRight.shape);
   objects.wallRight.fixture:setCategory(3)
 
@@ -53,7 +53,7 @@ function game:enter()
   -- testing
   --addEnemy("skull", 7, 0, 1)
   --addEnemy("oldOne", 25, 30, 1)
-  addEnemy("oldOne", 25, 30, 1)
+  addEnemy("oldOne", 25, 75, 1)
   --addEnemy("skull", 90, 0, -1)
 end
 

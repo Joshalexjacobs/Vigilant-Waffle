@@ -33,7 +33,8 @@ function love.load(arg)
   love.graphics.setFont(smallFont)
 
   -- setup maid64
-  maid64.setup(96, 64)
+  --maid64.setup(96, 64)
+  maid64.setup(96*2, 64*2)
 
   -- setup physics (1 meter = 64 pixels)
   love.physics.setMeter(32)
@@ -41,7 +42,7 @@ function love.load(arg)
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   Gamestate.registerEvents()
-  Gamestate.switch(game) -- swtich to menu screen
+  Gamestate.switch(game) -- switch to menu screen
 end
 
 function love:keypressed(key, code)
