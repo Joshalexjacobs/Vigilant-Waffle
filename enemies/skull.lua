@@ -27,7 +27,8 @@ local skull = {
     -- other
     timers = {},
     isDead = false,
-    category = CATEGORY.ENEMY
+    category = CATEGORY.ENEMY,
+    layer = 1
 }
 
 skull.load = function(entity)

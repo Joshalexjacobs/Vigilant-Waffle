@@ -50,8 +50,8 @@ oldOne.load = function(entity)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid(1, 1, "2-3", 1, 2, 1), {2.0, 0.1, 0.1, 0.1}), -- 1 idle/float
-    anim8.newAnimation(entity.spriteGrid("1-2", 2), 0.5, "pauseAtEnd"), -- 2 spawn sapling
-    anim8.newAnimation(entity.spriteGrid("2-1", 2, 1, 1), 0.5, "pauseAtEnd"), -- 3 back to idle
+    anim8.newAnimation(entity.spriteGrid("1-2", 2), 0.5, "pauseAtEnd"), -- 2 spawn sapling !!! need to reset these animations...
+    anim8.newAnimation(entity.spriteGrid("2-1", 2, 1, 1), 0.5, "pauseAtEnd"), -- 3 back to idle !!! at some point!
   }
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
@@ -60,7 +60,6 @@ oldOne.load = function(entity)
   addTimer(0.0, "isHit", entity.timers)
   addTimer(1.0, "spawn", entity.timers)
   addTimer(1.0, "spawning", entity.timers)
-  addTimer(1.0, "spawned", entity.timers)
 end
 
 oldOne.behaviour = function(dt, entity)
