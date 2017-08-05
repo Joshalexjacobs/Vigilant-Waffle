@@ -1,11 +1,11 @@
 --scrollingBG.lua
 
 local background = {
-  sprite = "img/bg.png",
+  sprite = "img/bg2.png",
   x1 = 0,
   y1 = 0,
   x2 = 0,
-  y2 = -256,
+  y2 = -256*2,
   w = 0,
   h = 0,
   -- functions
@@ -17,7 +17,7 @@ local background = {
 }
 
 background.load = function ()
-  background.sprite = maid64.newImage("img/bg.png")
+  background.sprite = maid64.newImage(background.sprite)
   background.h = background.sprite:getHeight()
 end
 
