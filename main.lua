@@ -11,6 +11,8 @@ require "states/game"
 
 world = love.physics.newWorld(0, 9.81 * 32, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
 
+DEBUG = false
+
 --[[ Global Functions ]]
 function copy(obj, seen)
   if type(obj) ~= 'table' then return obj end
@@ -51,6 +53,8 @@ function love:keypressed(key, code)
   elseif key == 'f' then
     local fullscreen, ftype = love.window.getFullscreen()
     love.window.setFullscreen(not fullscreen)
+  elseif key == 'b' then
+    DEBUG = not DEBUG
   end
 end
 

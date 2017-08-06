@@ -20,28 +20,54 @@ local newOne = {
     body = nil,
     shape = nil,
     fixture = nil,
+    joint = nil,
     -- newOne functions
     load = nil,
     behaviour = nil,
     draw = nil,
+    damage = nil,
     -- other
     timers = {},
     isDead = false,
     category = CATEGORY.ENEMY,
     layer = 1,
+    head = {
+      name = "head",
+      w = 8,
+      h = 2,
+      body = nil,
+      shape = nil,
+      fixture = nil,
+      category = CATEGORY.HEAD
+    }
 }
 
 newOne.load = function(entity)
   --[[ Physics setup ]]
+
+  -- enemy body
   entity.body = love.physics.newBody(world, 45, 25, "dynamic") -- makes it unmoving
   entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
   entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
 
-  entity.fixture:setCategory(entity.category)
-  entity.fixture:setUserData(entity)
-  entity.body:setFixedRotation(true)
+  -- enemy head (jumpable)
+  entity.head.body = love.physics.newBody(world, 45, 25, "dynamic")
+  entity.head.shape = love.physics.newRectangleShape(0, entity.offY-2, entity.head.w, entity.head.h)
+  entity.head.fixture = love.physics.newFixture(entity.head.body, entity.head.shape, 1)
 
-  --entity.body:setGravityScale(0)
+  -- joint that connects the enemie's body and head
+  local jointX, jointY = entity.body:getWorldCenter()
+  entity.joint = love.physics.newWeldJoint(entity.body, entity.head.body, jointX, jointY + entity.h / 2, false)
+
+  -- set categories
+  entity.fixture:setCategory(entity.category)
+  entity.head.fixture:setCategory(entity.head.category)
+
+  -- set user data for fixtures
+  entity.fixture:setUserData(entity)
+  entity.head.fixture:setUserData(entity)
+
+  entity.body:setFixedRotation(true)
   entity.body:setMass(1000)
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
@@ -71,6 +97,16 @@ local function flip(entity)
   entity.dir = -entity.dir -- flip their direction as well
 end
 
+newOne.damage = function(a, entity)
+  entity.isHit = true
+  resetTimer(0.05, "isHit", entity.timers)
+  entity.hp = entity.hp - 1
+
+  if a ~= nil then
+    a:destroy()
+  end
+end
+
 newOne.behaviour = function(dt, entity)
   --[[ Update newOne anim ]]
   entity.animations[entity.curAnim]:update(dt)
@@ -82,24 +118,12 @@ newOne.behaviour = function(dt, entity)
       if contacts[i]:isTouching() then
         b, a = contacts[i]:getFixtures()
         if a:getCategory() == CATEGORY.BULLET and a:isDestroyed() == false then
-          entity.isHit = true
-          resetTimer(0.05, "isHit", entity.timers)
-          entity.hp = entity.hp - 1
-          a:destroy()
+          entity.damage(a, entity)
         elseif entity.curAnim == 1 and (a:getCategory() == CATEGORY.GROUND or b:getCategory() == CATEGORY.GROUND) then
           entity.curAnim = 2
         elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) == true then
           flip(entity)
           resetTimer(0.20, "flip", entity.timers)
-        -- elseif b:getCategory() == CATEGORY.PLAYER then
-        --   local myX, myY = a:getBody():getWorldCenter() -- newOne
-        --   local bodX, bodY = b:getBody():getWorldCenter() -- player
-        --
-        --   if bodY < myY - entity.h / 2 and bodX >= myX - entity.w / 3 and bodX <= myX + entity.w / 3 then
-        --     -- print("bounce")
-        --   else
-        --     -- print("kill")
-        --   end
         end
       end
 
@@ -130,6 +154,7 @@ newOne.behaviour = function(dt, entity)
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
       entity.body:destroy()
+      entity.head.body:destroy()
     end
 
     if updateTimer(dt, "playDead", entity.timers) then
@@ -147,10 +172,16 @@ newOne.draw = function(entity)
 
   if entity.body:isDestroyed() == false then
     entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
+
+    if DEBUG then
+      love.graphics.setColor(255, 0, 0)
+      love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
+
+      love.graphics.setColor(0, 255, 0)
+      love.graphics.polygon("line", entity.head.body:getWorldPoints(entity.head.shape:getPoints()))
+    end
   end
 
-  love.graphics.setColor(255, 0, 0)
-  love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
   love.graphics.setColor(255, 255, 255)
 end
 

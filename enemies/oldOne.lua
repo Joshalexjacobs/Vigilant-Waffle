@@ -155,10 +155,14 @@ oldOne.draw = function(entity)
 
   if entity.body:isDestroyed() == false then
     entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
+
+    if DEBUG then
+      love.graphics.setColor(255, 0, 0)
+      love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
+    end
   end
 
-  --love.graphics.setColor(255, 0, 0)
-  --love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
+
   love.graphics.setColor(255, 255, 255)
 end
 

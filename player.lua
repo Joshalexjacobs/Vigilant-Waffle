@@ -146,11 +146,6 @@ player.update = function(dt)
 
   --[[ Player Jump ]]
   if love.keyboard.isDown('n') and player.isFalling == false then -- and player is touching the ground
-    -- player.curAnim = 4
-    -- player.isJumping = true
-    -- player.isFalling = true
-    -- player.body:applyForce(0, player.jumpStrength)
-    -- resetTimer(0.3, "jump", player.timers)
     jump(player)
   end
 
@@ -192,20 +187,15 @@ player.update = function(dt)
       if fixA:getCategory() == CATEGORY.GROUND or fixB:getCategory() == CATEGORY.GROUND then
         player.isFalling = false
         player.curAnim = 2
-      elseif fixB:getCategory() == CATEGORY.ENEMY then
-        if fixB:getUserData().name == "newOne" then
-          local entity = fixB:getUserData()
-          local myX, myY = fixB:getBody():getWorldCenter() -- newOne
-          local bodX, bodY = fixA:getBody():getWorldCenter() -- player
+      elseif fixB:getCategory() == CATEGORY.HEAD and updateTimer(dt, "jump", player.timers) then
+        player.jumpStrength = -300
+        jump(player)
+        player.jumpStrength = -75
 
-          if bodY < myY - entity.h / 2 and bodX >= myX - entity.w - 1 and bodX <= myX + entity.w - 1 then
-            player.jumpStrength = -100
-            jump(player)
-            player.jumpStrength = -75
-          else
-            print("kill")
-          end
-        end
+        local entity = fixB:getUserData()
+        fixB:getUserData().damage(nil, entity)
+      elseif fixB:getCategory() == CATEGORY.ENEMY then
+        -- print("dead") -- kill player
       end
     end
   end
@@ -216,9 +206,11 @@ player.draw = function()
   local x, y = player.body:getWorldPoints(player.shape:getPoints())
   player.animations[player.curAnim]:draw(player.spriteSheet, x + player.offX, y + player.offY)
 
- --love.graphics.setColor(255, 0, 0)
- --love.graphics.rectangle("line", player.x + player.offX, player.y + player.offY, player.w, player.h)
- --love.graphics.setColor(255, 255, 255)
+  if DEBUG then
+   love.graphics.setColor(255, 0, 0)
+   love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
+   love.graphics.setColor(255, 255, 255)
+  end
 
  --love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
 end

@@ -7,7 +7,9 @@ CATEGORY = {
   BULLET = 2,
   WALL = 3,
   GROUND = 4,
-  ENEMY = 5
+  ENEMY = 5,
+  HEAD = 6
+
 }
 
 player = require "player"
@@ -53,7 +55,7 @@ function game:enter()
   -- testing
   --addEnemy("skull", 7, 0, 1)
   --addEnemy("oldOne", 25, 30, 1)
-  --addEnemy("oldOne", 25, 75, 1)
+  addEnemy("oldOne", 25, 75, 1)
   addEnemy("newOne", 25, 75, 1)
   --addEnemy("skull", 90, 0, -1)
 end
