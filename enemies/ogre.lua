@@ -1,7 +1,7 @@
---skull.lua
+--ogre.lua
 
-local skull = {
-    name = "skull",
+local ogre = {
+    name = "ogre",
     hp = 10,
     x = 5,
     y = 5,
@@ -12,7 +12,7 @@ local skull = {
     speed = 8,
     dir = 1,
     -- skull assets
-    spriteSheet = "img/enemies/skull.png",
+    spriteSheet = "img/ogre.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
@@ -31,7 +31,7 @@ local skull = {
     layer = 1
 }
 
-skull.load = function(entity)
+ogre.load = function(entity)
   --[[ Physics setup ]]
   entity.body = love.physics.newBody(world, 45, 25, "dynamic")
   entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
@@ -44,10 +44,10 @@ skull.load = function(entity)
   entity.body:setLinearDamping(0.05)
 
   --[[ Load Skull images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 16, 32, 16, 0, 0, 0)
+  entity.spriteGrid = anim8.newGrid(48, 48, 144, 480, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
-    anim8.newAnimation(entity.spriteGrid("1-2", 1), 0.2) -- idle/float
+    anim8.newAnimation(entity.spriteGrid(3, 10), 0.2) -- idle/float
   }
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
@@ -56,7 +56,7 @@ skull.load = function(entity)
   addTimer(0.0, "isHit", entity.timers)
 end
 
-skull.behaviour = function(dt, entity)
+ogre.behaviour = function(dt, entity)
   --[[ Update skull anim ]]
   entity.animations[entity.curAnim]:update(dt)
 
@@ -76,9 +76,9 @@ skull.behaviour = function(dt, entity)
       end
     end
 
-    entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
-    local dx, dy = entity.body:getLinearVelocity()
-    entity.body:setLinearVelocity(entity.speed * entity.dir, dy - 1)
+    -- entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
+    -- local dx, dy = entity.body:getLinearVelocity()
+    -- entity.body:setLinearVelocity(entity.speed * entity.dir, dy - 1)
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
@@ -99,7 +99,7 @@ skull.behaviour = function(dt, entity)
 
 end
 
-skull.draw = function(entity)
+ogre.draw = function(entity)
 
   --[[ Draw ]]
   if entity.isHit then
@@ -120,4 +120,4 @@ skull.draw = function(entity)
   love.graphics.setColor(255, 255, 255)
 end
 
-return skull
+return ogre
