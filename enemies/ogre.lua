@@ -1,5 +1,10 @@
 --ogre.lua
 
+--[[
+TODO:
+- Design and implement ogre boss fight
+]]
+
 local ogre = {
     name = "ogre",
     hp = 10,
