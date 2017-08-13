@@ -119,6 +119,8 @@ newOne.behaviour = function(dt, entity)
         b, a = contacts[i]:getFixtures()
         if a:getCategory() == CATEGORY.BULLET and a:isDestroyed() == false then
           entity.damage(a, entity)
+        elseif b:getCategory() == CATEGORY.BULLET and b:isDestroyed() == false then
+          entity.damage(b, entity)
         elseif entity.curAnim == 1 and (a:getCategory() == CATEGORY.GROUND or b:getCategory() == CATEGORY.GROUND) then
           entity.curAnim = 2
         elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) == true then
@@ -175,6 +177,7 @@ newOne.draw = function(entity)
 
     if DEBUG then
       love.graphics.setColor(255, 0, 0)
+      love.graphics.printf(entity.hp, entity.x, 0, 100) -- testing
       love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
 
       love.graphics.setColor(0, 255, 0)
