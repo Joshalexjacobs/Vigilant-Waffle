@@ -8,19 +8,34 @@ TODO:
 local ogre = {
     name = "ogre",
     hp = 10,
-    x = 5,
-    y = 5,
-    w = 6,
-    h = 12,
-    offX = -4,
-    offY = -2.5,
-    speed = 8,
+    x = 50,
+    y = 10,
+    w = 24,
+    h = 24,
+    offX = -12,
+    offY = -12,
+    speed = 150,
     dir = 1,
-    -- skull assets
+    -- ogre assets
     spriteSheet = "img/ogre.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
+    hood = {
+      spriteSheet = "img/ogreHood.png",
+      spriteGrid = nil,
+      animations = {},
+      curAnim = 1,
+      loadHood = function (entity)
+        --[[ Load Ogre Hood images/prep animations ]]
+        entity.spriteGrid = anim8.newGrid(48, 48, 48, 48, 0, 0, 0)
+        entity.spriteSheet = maid64.newImage(entity.spriteSheet)
+
+        entity.animations = {
+          anim8.newAnimation(entity.spriteGrid(1, 1), 0.2) -- idle
+        }
+      end
+    },
     -- skull physics objets
     body = nil,
     shape = nil,
@@ -33,32 +48,51 @@ local ogre = {
     timers = {},
     isDead = false,
     category = CATEGORY.ENEMY,
-    layer = 1
+    layer = 1,
+    speedH = 5,
 }
 
 ogre.load = function(entity)
   --[[ Physics setup ]]
-  entity.body = love.physics.newBody(world, 45, 25, "dynamic")
-  entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
+  entity.body = love.physics.newBody(world, 10, 0, "dynamic")
+  entity.shape = love.physics.newRectangleShape(10, 0, entity.w, entity.h)
   entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
 
   entity.fixture:setCategory(entity.category)
+  entity.fixture:setUserData(entity)
   entity.body:setFixedRotation(true)
+
+  entity.body:setGravityScale(0)
+  entity.body:setMass(1000)
+
+  entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
 
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
 
-  --[[ Load Skull images/prep animations ]]
+  --[[ Load Ogre images/prep animations ]]
   entity.spriteGrid = anim8.newGrid(48, 48, 144, 480, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
+
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid(3, 10), 0.2) -- idle/float
   }
+
+  --[[ Load Ogre Hood ]]
+  entity.hood.loadHood(entity.hood)
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
 
   --[[ Setup Skull Timers ]]
   addTimer(0.0, "isHit", entity.timers)
+end
+
+--[[ flip ]]
+local function flip(entity)
+  for i = 1, table.getn(entity.animations) do
+    entity.animations[i]:flipH()
+  end
+  entity.dir = -entity.dir -- flip their direction as well
 end
 
 ogre.behaviour = function(dt, entity)
@@ -81,16 +115,15 @@ ogre.behaviour = function(dt, entity)
       end
     end
 
-    -- entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
-    -- local dx, dy = entity.body:getLinearVelocity()
-    -- entity.body:setLinearVelocity(entity.speed * entity.dir, dy - 1)
+    entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
+    -- entity.body:setLinearVelocity(entity.speedH * entity.dir, 0)
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
     entity.isHit = false
   end
 
-  --[[ Once skull dies ]]
+  --[[ Once Ogre dies ]]
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
@@ -101,7 +134,6 @@ ogre.behaviour = function(dt, entity)
       entity.isDead = true
     end
   end
-
 end
 
 ogre.draw = function(entity)
@@ -112,7 +144,8 @@ ogre.draw = function(entity)
   end
 
   if entity.body:isDestroyed() == false then
-    love.graphics.printf(entity.hp, entity.x, 0, 100) -- testing
+    --love.graphics.printf(entity.hp, entity.x, 0, 100) -- testing
+    --entity.hood.animations[entity.hood.curAnim]:draw(entity.hood.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
     entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
 
     if DEBUG then
