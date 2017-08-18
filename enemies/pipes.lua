@@ -1,25 +1,18 @@
 --pipes.lua
 
---[[
-TODO:
-- spawn pipe on the side of the elevator walls
-- pipe spawns ~10 skulls
-- pipe despawns, is a non-killable enemy
-]]
-
 local pipes = {
     name = "pipes",
-    hp = 25,
+    hp = 35,
     x = 5,
     y = 5,
-    w = 12,
-    h = 12,
-    offX = -2,
-    offY = -2.5,
-    speed = 150,
+    w = 20,
+    h = 20,
+    offX = -5,
+    offY = -7,
+    speed = 10,
     dir = 1,
     -- pipes assets
-    spriteSheet = "img/enemies/oldOne.png",
+    spriteSheet = "img/enemies/skullPipe.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
@@ -36,7 +29,8 @@ local pipes = {
     isDead = false,
     category = CATEGORY.ENEMY,
     layer = 2,
-    speedH = 3,
+    skullCount = 0,
+    skullMax = 5
 }
 
 pipes.load = function(entity)
@@ -52,26 +46,25 @@ pipes.load = function(entity)
   entity.body:setGravityScale(0)
   entity.body:setMass(1000)
   --[[ Damping (decelaration) ]]
-  entity.body:setLinearDamping(0.05)
+  entity.body:setLinearDamping(1.25)
 
   --[[ Load pipes images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 16, 48, 32, 0, 0, 0)
+  entity.spriteGrid = anim8.newGrid(32, 44, 96, 88, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
-    anim8.newAnimation(entity.spriteGrid(1, 1, "2-3", 1, 2, 1), {2.0, 0.1, 0.1, 0.1}), -- 1 idle/float
-    anim8.newAnimation(entity.spriteGrid("1-2", 2), 0.5, "pauseAtEnd"), -- 2 spawn sapling !!! need to reset these animations...
-    anim8.newAnimation(entity.spriteGrid("2-1", 2, 1, 1), 0.5, "pauseAtEnd"), -- 3 back to idle !!! at some point!
+    anim8.newAnimation(entity.spriteGrid("1-2", 1), 0.1), -- 1 idle
+    anim8.newAnimation(entity.spriteGrid(3, 1, "1-2", 2), 1.0, "pauseAtEnd"), -- 2 opening mouth
+    anim8.newAnimation(entity.spriteGrid("2-1", 2, 3, 1, 1, 1), 0.5, "pauseAtEnd"), -- 3 closing mouth
   }
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL)
 
   --[[ Setup pipes Timers ]]
   addTimer(0.0, "isHit", entity.timers)
-  addTimer(1.0, "spawn", entity.timers)
-  addTimer(1.0, "spawning", entity.timers)
-  addTimer(0.0, "backToIdle", entity.timers)
-  addTimer(0.5, "float", entity.timers)
-  addTimer(0.0, "flip", entity.timers)
+  addTimer(4.0, "moveToView", entity.timers)
+  addTimer(3.0, "spawn", entity.timers)
+  addTimer(4.0, "moveOutOfView", entity.timers)
 end
 
 --[[ flip ]]
@@ -97,43 +90,33 @@ pipes.behaviour = function(dt, entity)
           resetTimer(0.05, "isHit", entity.timers)
           entity.hp = entity.hp - 1
           a:destroy()
-        elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) == true then
-          flip(entity)
-          resetTimer(0.20, "flip", entity.timers)
         end
       end
     end
 
     entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
-    local dx, dy = entity.body:getLinearVelocity()
 
-    if updateTimer(dt, "spawn", entity.timers) then
-      entity.curAnim = 2
-      if updateTimer(dt, "spawning", entity.timers) and entity.curAnim then
-        addEnemy("newOne", entity.x+6, entity.y+4, 1)
+    if updateTimer(dt, "moveToView", entity.timers) == false then
+      entity.body:setLinearVelocity(entity.speed * entity.dir, 0)
+    end
+
+    if updateTimer(dt, "moveToView", entity.timers) then
+      if entity.curAnim == 1 then entity.curAnim = 2 end
+      if updateTimer(dt, "spawn", entity.timers) and entity.skullCount < entity.skullMax then
+        addEnemy("skull", entity.x + 10, entity.y + 4, -1) -- addEnemy
+        resetTimer(1.75, "spawn", entity.timers)-- resetTimer
+        entity.skullCount = entity.skullCount + 1
+      elseif entity.skullCount >= entity.skullMax and entity.curAnim ~= 3 then
         entity.curAnim = 3
-        resetTimer(7.5, "spawn", entity.timers)
-        resetTimer(1.0, "spawning", entity.timers)
-        resetTimer(1.5, "backToIdle", entity.timers)
+        entity.dir = - entity.dir
+      end
+
+      if entity.curAnim == 3 and updateTimer(dt, "moveOutOfView", entity.timers) == false then
+        entity.body:setLinearVelocity(entity.speed * entity.dir, 0)
+      elseif entity.curAnim == 3 and updateTimer(dt, "moveOutOfView", entity.timers) then
+        entity.hp = 0
       end
     end
-
-    if entity.curAnim == 3 and updateTimer(dt, "backToIdle", entity.timers) then
-      entity.curAnim = 1
-      entity.animations[2]:gotoFrame(1)
-      entity.animations[2]:resume()
-      entity.animations[3]:gotoFrame(1)
-      entity.animations[3]:resume()
-    end
-
-    -- basic vertical float/horizontal movement:
-    entity.body:setLinearVelocity(entity.speedH * entity.dir, -math.sin(entity.speed))
-
-    if updateTimer(dt, "float", entity.timers) then
-      resetTimer(1.0, "float", entity.timers)
-      entity.speed = -entity.speed
-    end
-
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
