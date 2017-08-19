@@ -38,7 +38,7 @@ function addEnemy(name, x, y, dir)
   if dir then newEnemy.dir = dir end
 
   -- temporary flip until i think of a better place for this
-  if dir == -1 then
+  if tonumber(dir) == -1 then
     for i = 1, table.getn(newEnemy.animations) do
       newEnemy.animations[i]:flipH()
     end

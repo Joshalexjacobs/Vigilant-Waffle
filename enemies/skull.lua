@@ -44,6 +44,9 @@ skull.load = function(entity)
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
 
+  --[[ Restitution (determines bounce) ]]
+  entity.fixture:setRestitution(0.2)
+
   --[[ Load Skull images/prep animations ]]
   entity.spriteGrid = anim8.newGrid(16, 16, 32, 16, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)

@@ -10,7 +10,7 @@ local pipes = {
     offX = -5,
     offY = -7,
     speed = 10,
-    dir = -1,
+    dir = 1,
     -- pipes assets
     spriteSheet = "img/enemies/skullPipe.png",
     spriteGrid = nil,
@@ -45,6 +45,7 @@ pipes.load = function(entity)
 
   entity.body:setGravityScale(0)
   entity.body:setMass(1000)
+
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(1.25)
 
@@ -102,7 +103,7 @@ pipes.behaviour = function(dt, entity)
     if updateTimer(dt, "moveToView", entity.timers) then
       if entity.curAnim == 1 then entity.curAnim = 2 end
       if updateTimer(dt, "spawn", entity.timers) and entity.skullCount < entity.skullMax then
-        addEnemy("skull", entity.x + 10, entity.y + 4, -1) -- addEnemy
+        addEnemy("skull", entity.x + 10, entity.y + 4, entity.dir) -- addEnemy
         resetTimer(1.75, "spawn", entity.timers)-- resetTimer
         entity.skullCount = entity.skullCount + 1
       elseif entity.skullCount >= entity.skullMax and entity.curAnim ~= 3 then
