@@ -2,12 +2,12 @@
 
 local bat = {
     name = "bat",
-    hp = 15,
+    hp = 5,
     x = -50,
     y = -50,
-    w = 10,
-    h = 7,
-    offX = -2.5,
+    w = 12,
+    h = 8,
+    offX = -1.5,
     offY = -3,
     speed = 20,
     dir = 1,
