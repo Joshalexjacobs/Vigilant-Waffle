@@ -59,7 +59,9 @@ function game:enter()
   -- addEnemy("newOne", 25, 75, 1)
   -- addEnemy("skull", 90, 0, -1)
   -- addEnemy("ogre", 25, 75, 1)
-  addEnemy("pipes", 203, 75, -1) -- 175
+  addEnemy("bat", 25, 75, 1)
+  addEnemy("bat", 50, 10, 1)
+  addEnemy("bat", 80, 25, 1)
 end
 
 function game:update(dt)

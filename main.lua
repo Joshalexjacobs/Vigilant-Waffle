@@ -1,5 +1,10 @@
 --main.lua
 
+--[[
+LINKS TO CHECKOUT:
+- http://www.somethinghitme.com/2013/11/13/snippets-i-always-forget-movement/
+]]
+
 Gamestate = require "lib/gamestate"
 anim8 = require "lib/anim8"
 require "lib/maid64"
@@ -37,6 +42,9 @@ function love.load(arg)
   -- setup maid64
   --maid64.setup(96, 64)
   maid64.setup(96*2, 64*2)
+  
+  -- seed love.math.rand() using os time
+  math.randomseed(os.time())
 
   -- setup physics (1 meter = 64 pixels)
   love.physics.setMeter(32)
