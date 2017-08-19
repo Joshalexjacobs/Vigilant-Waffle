@@ -42,7 +42,7 @@ function love.load(arg)
   -- setup maid64
   --maid64.setup(96, 64)
   maid64.setup(96*2, 64*2)
-  
+
   -- seed love.math.rand() using os time
   math.randomseed(os.time())
 
@@ -52,8 +52,8 @@ function love.load(arg)
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   Gamestate.registerEvents()
-  Gamestate.switch(game) -- switch to game
-  -- Gamestate.switch(menu) -- switch to menu screen
+  -- Gamestate.switch(game) -- switch to game
+  Gamestate.switch(menu) -- switch to menu screen
 end
 
 function love:keypressed(key, code)

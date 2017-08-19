@@ -2,7 +2,7 @@
 
 local timeline = {}
 
-local timelineName = "timelines/test.txt"
+local timelineName = "timelines/demo.txt"
 
 local time = 0
 
@@ -58,6 +58,7 @@ end
 
 function drawTime()
   if DEBUG then
-    love.graphics.printf(time, 50, 0, 100) -- testing
+    love.graphics.printf(time, 5, 0, 200) -- testing
+    love.graphics.printf("- " .. timelineName, 35, 0, 200) -- testing
   end
 end
