@@ -9,7 +9,7 @@ local time = 0
 function loadTimelineManager()
   -- load timeline and store in timeline
   for line in io.lines(timelineName) do
-    local row = {name = nil, time = nil, x = nil, y = nil}
+    local row = {name = nil, time = nil, x = nil, y = nil, dir = 1}
 
     if line == nil or line == '' or line == ' ' then
       print("Skipped blank line during timeline load.")
@@ -23,7 +23,13 @@ function loadTimelineManager()
       row.x = string.sub(line, 1, string.find(line, ' ') - 1)
       line = string.gsub(line, row.x .. ' ', '', 1)
 
-      row.y = line
+      print(line)
+
+      -- row.y = line
+      row.y = string.sub(line, 1, string.find(line, ' ') - 1)
+      line = string.gsub(line, row.y .. ' ', '', 1)
+
+      row.dir = line
 
       table.insert(timeline, row)
     end
@@ -39,7 +45,7 @@ end
 function updateTM()
   while #timeline > 1 and tonumber(timeline[1].time) <= time do
     -- print("adding " .. timeline[1].name, timeline[1].time)
-    addEnemy(timeline[1].name, timeline[1].x, timeline[1].y, 1)
+    addEnemy(timeline[1].name, timeline[1].x, timeline[1].y, timeline[1].dir)
     table.remove(timeline, 1)
   end
 end

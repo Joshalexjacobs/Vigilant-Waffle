@@ -3,14 +3,14 @@
 local pipes = {
     name = "pipes",
     hp = 35,
-    x = 5,
-    y = 5,
+    x = -50,
+    y = -50,
     w = 20,
     h = 20,
     offX = -5,
     offY = -7,
     speed = 10,
-    dir = 1,
+    dir = -1,
     -- pipes assets
     spriteSheet = "img/enemies/skullPipe.png",
     spriteGrid = nil,
@@ -57,8 +57,7 @@ pipes.load = function(entity)
     anim8.newAnimation(entity.spriteGrid("2-1", 2, 3, 1, 1, 1), 0.5, "pauseAtEnd"), -- 3 closing mouth
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER)
 
   --[[ Setup pipes Timers ]]
   addTimer(0.0, "isHit", entity.timers)

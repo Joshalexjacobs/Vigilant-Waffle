@@ -38,7 +38,7 @@ local bat = {
       body = nil,
       shape = nil,
       fixture = nil,
-      category = CATEGORY.HEAD
+      category = CATEGORY.DIAMETER
     }
 }
 
@@ -65,6 +65,7 @@ bat.load = function(entity)
 
   -- set categories
   entity.fixture:setCategory(entity.category)
+  entity.diameter.fixture:setCategory(entity.diameter.category)
 
   -- set user data for fixtures
   entity.fixture:setUserData(entity)
@@ -83,7 +84,8 @@ bat.load = function(entity)
     anim8.newAnimation(entity.spriteGrid("1-3", 1, "1-2", 2, "2-1", 2, "3-1", 1), 0.05), -- 1 idle
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER)
+  entity.diameter.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER, CATEGORY.BULLET, CATEGORY.PLAYER)
 
   --[[ Setup bat Timers ]]
   addTimer(0.0, "isHit", entity.timers)
