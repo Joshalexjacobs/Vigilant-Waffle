@@ -55,10 +55,13 @@ function game:enter()
   -- testing
   -- addEnemy("skull", 7, 0, 1)
   -- addEnemy("oldOne", 25, 30, 1)
-  addEnemy("oldOne", 25, 75, 1)
+  -- addEnemy("oldOne", 25, 75, 1)
   -- addEnemy("newOne", 25, 75, 1)
   -- addEnemy("skull", 90, 0, -1)
-  --addEnemy("ogre", 25, 75, 1)
+  -- addEnemy("ogre", 25, 75, 1)
+  addEnemy("bat", 25, 75, 1)
+  addEnemy("bat", 50, 10, 1)
+  addEnemy("bat", 80, 25, 1)
 end
 
 function game:update(dt)

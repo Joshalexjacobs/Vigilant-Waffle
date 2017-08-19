@@ -147,9 +147,6 @@ templateEnemy.draw = function(entity)
       love.graphics.setColor(255, 0, 0)
       love.graphics.printf(entity.hp, entity.x, 0, 100)
       love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
-
-      love.graphics.setColor(0, 255, 0)
-      love.graphics.polygon("line", entity.head.body:getWorldPoints(entity.head.shape:getPoints()))
     end
   end
 
