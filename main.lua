@@ -44,7 +44,8 @@ function love.load(arg)
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   Gamestate.registerEvents()
-  Gamestate.switch(game) -- switch to menu screen
+  Gamestate.switch(game) -- switch to game
+  -- Gamestate.switch(menu) -- switch to menu screen
 end
 
 function love:keypressed(key, code)

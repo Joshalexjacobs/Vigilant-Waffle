@@ -17,12 +17,18 @@ local background = require "scrollingBG"
 require "bullets"
 require "enemies"
 require "enemyDictionary"
+require "timelineManager"
 
 
 objects = {}
 bg = {}
 
 function game:enter()
+  loadEnemyDictionary() -- loads a preset of every enemy, ready for instantiation
+  if loadTimelineManager() == false then
+    love.errhand("Failed to load timelineManager")
+  end
+
   --let's create the ground
   objects.ground = {}
   objects.ground.body = love.physics.newBody(world, 128 / 2, 128 - 5 / 2)
@@ -49,13 +55,12 @@ function game:enter()
 
   player.load()
   loadBullets()
-  loadEnemyDictionary() -- loads a preset of every enemy, ready for instantiation
   background.load()
 
   -- testing
   -- addEnemy("skull", 7, 0, 1)
   -- addEnemy("oldOne", 25, 30, 1)
-  addEnemy("oldOne", 25, 75, 1)
+  -- addEnemy("oldOne", 25, 75, 1)
   -- addEnemy("newOne", 25, 75, 1)
   -- addEnemy("skull", 90, 0, -1)
   --addEnemy("ogre", 25, 75, 1)
@@ -66,6 +71,9 @@ function game:update(dt)
   player.update(dt)
   updateBullet(dt)
   updateEnemy(dt)
+
+  updateTime(dt)
+  updateTM()
 
   background.update(dt)
 end
@@ -91,6 +99,7 @@ function game:draw()
 
   drawBullet()
 
+  drawTime()
 
   --love.graphics.rectangle("fill", 10, 20, 2, 2)
 
