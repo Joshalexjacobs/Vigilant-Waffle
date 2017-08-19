@@ -1,0 +1,57 @@
+-- timelineManager.lua
+
+local timeline = {}
+
+local timelineName = "timelines/test.txt"
+
+local time = 0
+
+function loadTimelineManager()
+  -- load timeline and store in timeline
+  for line in io.lines(timelineName) do
+    local row = {name = nil, time = nil, x = nil, y = nil}
+
+    if line == nil or line == '' or line == ' ' then
+      print("Skipped blank line during timeline load.")
+    else
+      row.name = string.sub(line, 1, string.find(line, ' ') - 1)
+      line = string.gsub(line, row.name .. ' ', '')
+
+      row.time = string.sub(line, 1, string.find(line, ' ') - 1)
+      line = string.gsub(line, row.time .. ' ', '', 1)
+
+      row.x = string.sub(line, 1, string.find(line, ' ') - 1)
+      line = string.gsub(line, row.x .. ' ', '', 1)
+
+      row.y = line
+
+      table.insert(timeline, row)
+    end
+  end
+
+  for i = 1, 5, 1 do
+    print(timeline[i].name .. " - " .. timeline[i].time .. " @ " .. timeline[i].x .. ", " .. timeline[i].y)
+  end
+
+  return true
+end
+
+function updateTM()
+  while #timeline > 1 and tonumber(timeline[1].time) <= time do
+    -- print("adding " .. timeline[1].name, timeline[1].time)
+    addEnemy(timeline[1].name, timeline[1].x, timeline[1].y, 1)
+    table.remove(timeline, 1)
+  end
+end
+
+function updateTime(dt)
+  time = math.floor((time + dt )* (10 ^ 2) + 0.5) / (10 ^ 2)
+
+  return time
+end
+
+function drawTime()
+  if DEBUG then
+    love.graphics.printf(time, 50, 0, 100) -- testing
+  end
+end
