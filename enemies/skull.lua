@@ -2,14 +2,14 @@
 
 local skull = {
     name = "skull",
-    hp = 10,
-    x = 5,
-    y = 5,
+    hp = 5,
+    x = -50,
+    y = -50,
     w = 6,
     h = 12,
     offX = -4,
     offY = -2.5,
-    speed = 8,
+    speed = 12,
     dir = 1,
     -- skull assets
     spriteSheet = "img/enemies/skull.png",
@@ -24,6 +24,7 @@ local skull = {
     load = nil,
     behaviour = nil,
     draw = nil,
+    damage = nil,
     -- other
     timers = {},
     isDead = false,
@@ -56,6 +57,16 @@ skull.load = function(entity)
   addTimer(0.0, "isHit", entity.timers)
 end
 
+skull.damage = function(a, entity)
+  entity.isHit = true
+  resetTimer(0.05, "isHit", entity.timers)
+  entity.hp = entity.hp - 1
+
+  if a ~= nil then
+    a:destroy()
+  end
+end
+
 skull.behaviour = function(dt, entity)
   --[[ Update skull anim ]]
   entity.animations[entity.curAnim]:update(dt)
@@ -72,6 +83,8 @@ skull.behaviour = function(dt, entity)
           resetTimer(0.05, "isHit", entity.timers)
           entity.hp = entity.hp - 1
           a:destroy()
+        elseif b:getCategory() == CATEGORY.BULLET and b:isDestroyed() == false then
+          entity.damage(b, entity)
         end
       end
     end
@@ -107,7 +120,7 @@ skull.draw = function(entity)
   end
 
   if entity.body:isDestroyed() == false then
-    love.graphics.printf(entity.hp, entity.x, 0, 100) -- testing
+    -- love.graphics.printf(entity.hp, entity.x, 0, 100) -- testing
     entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
 
     if DEBUG then
