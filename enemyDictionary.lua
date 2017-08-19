@@ -2,7 +2,7 @@ local skull = require "enemies/skull"
 local oldOne = require "enemies/oldOne"
 local newOne = require "enemies/newOne"
 local ogre = require "enemies/ogre"
-
+local pipes = require "enemies/pipes"
 local bat = require "enemies/bat"
 
 local enemyDictionary = {
@@ -11,6 +11,7 @@ local enemyDictionary = {
   {name = "newOne", enemy = newOne},
   {name = "ogre", enemy = ogre},
   {name = "bat", enemy = bat},
+  {name = "pipes", enemy = pipes},
 }
 
 function loadEnemyDictionary()
