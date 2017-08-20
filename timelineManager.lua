@@ -11,7 +11,7 @@ function loadTimelineManager()
   for line in io.lines(timelineName) do
     local row = {name = nil, time = nil, x = nil, y = nil, dir = 1}
 
-    if line == nil or line == '' or line == ' ' then
+    if line == nil or line == '' or line == ' ' or string.sub(line, 1, 2) == "--" then
       print("Skipped blank line during timeline load.")
     else
       row.name = string.sub(line, 1, string.find(line, ' ') - 1)
