@@ -23,6 +23,15 @@ require "timelineManager"
 objects = {}
 bg = {}
 
+function game:keypressed(key, code)
+  if key == 'r' and player.isDead then
+    -- delete enemies
+    -- reset player position
+    -- reset player isDead
+    -- reset world?
+  end
+end
+
 function game:enter()
   loadEnemyDictionary() -- loads a preset of every enemy, ready for instantiation
   if loadTimelineManager() == false then
@@ -118,7 +127,11 @@ function game:draw()
 
   drawTime()
 
-  --love.graphics.rectangle("fill", 10, 20, 2, 2)
+  if player.isDead then
+    love.graphics.setFont(bigFont)
+    love.graphics.printf("You Are Dead.", 47, 50, 200)
+    love.graphics.setFont(smallFont)
+  end
 
   maid64.finish()
 end
