@@ -58,7 +58,7 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid("2-3", 4), {0.125, 0.10}, "pauseAtEnd"), -- 4 jumping
     anim8.newAnimation(player.spriteGrid("1-3", "5-6"), 0.15), -- 5 angleShot
     anim8.newAnimation(player.spriteGrid(1, 1, 2, 1), 0.09), -- 6 idle shot
-    anim8.newAnimation(player.spriteGrid(3, 7, "1-3", 8, 1, 9), 0.1, "pauseAtEnd"), -- 7 dying
+    anim8.newAnimation(player.spriteGrid(3, 7, "1-3", 8, 1, 9), 0.125, "pauseAtEnd"), -- 7 dying
   }
 
   --[[ Set up player timers ]]
