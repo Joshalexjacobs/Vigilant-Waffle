@@ -24,6 +24,7 @@ local pipes = {
     load = nil,
     behaviour = nil,
     draw = nil,
+    kill = nil,
     -- other
     timers = {},
     isDead = false,
@@ -73,6 +74,10 @@ local function flip(entity)
     entity.animations[i]:flipH()
   end
   entity.dir = -entity.dir -- flip their direction as well
+end
+
+pipes.kill = function(entity)
+  entity.body:destroy()
 end
 
 pipes.behaviour = function(dt, entity)
@@ -127,7 +132,7 @@ pipes.behaviour = function(dt, entity)
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
-      entity.body:destroy()
+      entity.kill(entity)
     end
 
     if updateTimer(dt, "playDead", entity.timers) then

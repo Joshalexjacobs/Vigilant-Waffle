@@ -25,6 +25,7 @@ local player = {
   load = nil,
   update = nil,
   draw = nil,
+  reset = nil,
   -- other
   timers = {},
   shootRate = 0.1,
@@ -33,6 +34,17 @@ local player = {
   isJumping = false, -- determines player jump until reaching the peak
   isDead = false
 }
+
+player.reset = function()
+  player.isDead = false
+  player.isFalling = true
+  player.curAnim = 1
+  player.fixture:setMask()
+  player.animations[7]:gotoFrame(1)
+  player.animations[7]:resume()
+  player.body:setX(95)
+  player.body:setY(75)
+end
 
 player.load = function()
   --[[ Physics setup ]]

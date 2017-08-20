@@ -25,6 +25,7 @@ local skull = {
     behaviour = nil,
     draw = nil,
     damage = nil,
+    kill = nil,
     -- other
     timers = {},
     isDead = false,
@@ -70,6 +71,10 @@ skull.damage = function(a, entity)
   end
 end
 
+skull.kill = function(entity)
+  entity.body:destroy()
+end
+
 skull.behaviour = function(dt, entity)
   --[[ Update skull anim ]]
   entity.animations[entity.curAnim]:update(dt)
@@ -105,7 +110,7 @@ skull.behaviour = function(dt, entity)
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
-      entity.body:destroy()
+      entity.kill(entity)
     end
 
     if updateTimer(dt, "playDead", entity.timers) then

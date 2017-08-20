@@ -42,6 +42,12 @@ function loadTimelineManager()
   return true
 end
 
+function resetTM()
+  time = 0
+  timeline = {}
+  loadTimelineManager()
+end
+
 function updateTM()
   while #timeline > 1 and tonumber(timeline[1].time) <= time do
     -- print("adding " .. timeline[1].name, timeline[1].time)

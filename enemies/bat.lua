@@ -26,6 +26,7 @@ local bat = {
     behaviour = nil,
     draw = nil,
     damage = nil,
+    kill = nil,
     -- other
     timers = {},
     isDead = false,
@@ -110,6 +111,11 @@ bat.damage = function(a, entity)
   end
 end
 
+bat.kill = function(entity)
+  entity.body:destroy()
+  entity.diameter.body:destroy()
+end
+
 bat.behaviour = function(dt, entity)
   --[[ Update bat anim ]]
   entity.animations[entity.curAnim]:update(dt)
@@ -153,8 +159,7 @@ bat.behaviour = function(dt, entity)
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
-      entity.body:destroy()
-      entity.diameter.body:destroy()
+      entity.kill(entity)
     end
 
     if updateTimer(dt, "playDead", entity.timers) then

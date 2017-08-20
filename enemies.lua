@@ -31,6 +31,19 @@ local enemy = {
 local enemiesOne = {}
 local enemiesTwo = {}
 
+function resetEnemies()
+  for i, newEnemy in ipairs(enemiesOne) do
+    newEnemy.kill(newEnemy)
+  end
+
+  for i, newEnemy in ipairs(enemiesTwo) do
+    newEnemy.kill(newEnemy)
+  end
+
+  enemiesOne = {}
+  enemiesTwo = {}
+end
+
 function addEnemy(name, x, y, dir)
   local newEnemy = getEnemy(name)
   if x then newEnemy.body:setX(x) end

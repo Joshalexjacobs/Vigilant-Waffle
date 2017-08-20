@@ -23,12 +23,15 @@ require "timelineManager"
 objects = {}
 bg = {}
 
+local function restart()
+
+end
+
 function game:keypressed(key, code)
   if key == 'r' and player.isDead then
-    -- delete enemies
-    -- reset player position
-    -- reset player isDead
-    -- reset world?
+    player.reset()
+    resetEnemies()
+    resetTM()
   end
 end
 

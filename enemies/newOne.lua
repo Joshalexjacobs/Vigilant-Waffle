@@ -26,6 +26,7 @@ local newOne = {
     behaviour = nil,
     draw = nil,
     damage = nil,
+    kill = nil,
     -- other
     timers = {},
     isDead = false,
@@ -107,6 +108,11 @@ newOne.damage = function(a, entity)
   end
 end
 
+newOne.kill = function(entity)
+  entity.body:destroy()
+  entity.head.body:destroy()
+end
+
 newOne.behaviour = function(dt, entity)
   --[[ Update newOne anim ]]
   entity.animations[entity.curAnim]:update(dt)
@@ -155,8 +161,7 @@ newOne.behaviour = function(dt, entity)
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
-      entity.body:destroy()
-      entity.head.body:destroy()
+      entity.kill(entity)
     end
 
     if updateTimer(dt, "playDead", entity.timers) then

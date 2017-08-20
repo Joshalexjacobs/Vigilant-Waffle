@@ -24,6 +24,7 @@ local ogre = {
     load = nil,
     behaviour = nil,
     draw = nil,
+    kill = nil,
     -- other
     timers = {},
     isDead = false,
@@ -54,6 +55,10 @@ ogre.load = function(entity)
 
   --[[ Setup Skull Timers ]]
   addTimer(0.0, "isHit", entity.timers)
+end
+
+ogre.kill = function(entity)
+  entity.body:destroy()
 end
 
 ogre.behaviour = function(dt, entity)
@@ -89,7 +94,7 @@ ogre.behaviour = function(dt, entity)
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
-      entity.body:destroy()
+      entity.kill(entity)
     end
 
     if updateTimer(dt, "playDead", entity.timers) then

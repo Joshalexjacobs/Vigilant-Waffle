@@ -26,6 +26,7 @@ local templateEnemy = {
     behaviour = nil,
     draw = nil,
     damage = nil,
+    kill = nil,
     -- other
     timers = {},
     isDead = false,
@@ -94,6 +95,10 @@ templateEnemy.damage = function(a, entity)
   end
 end
 
+templateEnemy.kill = function(entity)
+  entity.body:destroy()
+end
+
 templateEnemy.behaviour = function(dt, entity)
   --[[ Update templateEnemy anim ]]
   entity.animations[entity.curAnim]:update(dt)
@@ -124,7 +129,7 @@ templateEnemy.behaviour = function(dt, entity)
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
-      entity.body:destroy()
+      entity.kill(entity)
     end
 
     if updateTimer(dt, "playDead", entity.timers) then
