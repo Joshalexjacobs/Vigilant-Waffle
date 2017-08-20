@@ -71,15 +71,28 @@ function game:enter()
 end
 
 function game:update(dt)
-  world:update(dt)
-  player.update(dt)
-  updateBullet(dt)
-  updateEnemy(dt)
+  if player.isDead then
+    local newDT = dt / 4
+    world:update(newDT)
+    player.update(newDT)
+    updateBullet(newDT)
+    updateEnemy(newDT)
 
-  updateTime(dt)
-  updateTM()
+    updateTime(newDT)
+    updateTM()
 
-  background.update(dt)
+    background.update(newDT)
+  else
+    world:update(dt)
+    player.update(dt)
+    updateBullet(dt)
+    updateEnemy(dt)
+
+    updateTime(dt)
+    updateTM()
+
+    background.update(dt)
+  end
 end
 
 function game:draw()
