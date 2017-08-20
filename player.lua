@@ -32,7 +32,8 @@ local player = {
   category = CATEGORY.PLAYER,
   isFalling = true,
   isJumping = false, -- determines player jump until reaching the peak
-  isDead = false
+  isDead = false,
+  state = "idle"
 }
 
 player.reset = function()
@@ -59,6 +60,8 @@ player.load = function()
   --[[ Damping (decelaration) ]]
   player.body:setLinearDamping(0.05)
 
+  player.fixture:setMask(CATEGORY.BULLET)
+
   --[[ Player animations/sprites]]
   player.spriteGrid = anim8.newGrid(8, 16, 24, 144, 0, 0, 0)
   player.spriteSheet = maid64.newImage(player.spriteSheet)
@@ -71,6 +74,7 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid("1-3", "5-6"), 0.15), -- 5 angleShot
     anim8.newAnimation(player.spriteGrid(1, 1, 2, 1), 0.09), -- 6 idle shot
     anim8.newAnimation(player.spriteGrid(3, 7, "1-3", 8, 1, 9), 0.125, "pauseAtEnd"), -- 7 dying
+    anim8.newAnimation(player.spriteGrid("1-2", 7), 0.09), -- 8 up shot
   }
 
   --[[ Set up player timers ]]
@@ -125,19 +129,13 @@ player.update = function(dt)
       end
     end
 
-    -- this needs to go somewhere to make the angled shot anim work
-    if love.keyboard.isDown('w') and (love.keyboard.isDown('a') or love.keyboard.isDown('d'))
-      and love.keyboard.isDown('m') then
-      player.curAnim = 5
-      player.dir.y = -1
-    -- elseif love.keyboard.isDown('w') and not (love.keyboard.isDown('a') or love.keyboard.isDown('d')) then
-    --   if love.keyboard.isDown('m') then
-    --     player.curAnim = 6
-    --   else
-    --     player.curAnim = 1
-    --     player.dir.y = -1
-    --     -- player.dir.x = 0
-    --   end
+    if love.keyboard.isDown('w') and love.keyboard.isDown('m') then
+      if love.keyboard.isDown('a') or love.keyboard.isDown('d') then
+        player.curAnim = 5
+        player.dir.y = -1
+      else
+        player.dir.y = -1
+      end
     else
       player.dir.y = 0
     end
@@ -148,12 +146,16 @@ player.update = function(dt)
       local offD = 0
       if player.dir.x == 1 then offD = 5 else offD = -2 end
 
-      if player.dir.y == 0 then
+      if player.dir.y == -1 and love.keyboard.isDown('a') == false and love.keyboard.isDown('d') == false then
+        local dir = {x = 0, y = player.dir.y}
+        addBullet(x + 2, y - 4, dir)
+        player.state = "shootingUp"
+      elseif player.dir.y == 0 then
         addBullet(x + offD, y + 3.5, player.dir)
+        player.state = "horizontal"
       elseif player.dir.y == -1 then
         addBullet(x + offD, y - 1, player.dir)
-      elseif player.dir.y == 1 then
-        addBullet(x + offD, y, player.dir)
+        player.state = "angled"
       end
       resetTimer(player.shootRate, "shoot", player.timers)
     end
@@ -163,12 +165,14 @@ player.update = function(dt)
 
     --[[ Player Jump ]]
     if love.keyboard.isDown('n') and player.isFalling == false then -- and player is touching the ground
+      player.state = "jumping"
       jump(player)
     end
 
     --[[ Once player has reached the peak, begin free falling ]]
     if player.isJumping and updateTimer(dt, "jump", player.timers) then
       player.isJumping = false
+      player.state = "falling"
     end
 
     --[[ Move player left/right depending on dx velocity and their direction ]]
@@ -183,8 +187,11 @@ player.update = function(dt)
       and not love.keyboard.isDown('m') then
       player.curAnim = 1
     elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
-      and love.keyboard.isDown('m') then
+      and love.keyboard.isDown('m') and player.state ~= "shootingUp" then
       player.curAnim = 6
+    elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
+      and love.keyboard.isDown('m') and player.state == "shootingUp" then
+      player.curAnim = 8
     end
 
     --[[ Play falling animation ]]
@@ -203,6 +210,7 @@ player.update = function(dt)
         if fixB:getCategory() == CATEGORY.ENEMY or fixA:getCategory() == CATEGORY.ENEMY then
           kill(player)
         end
+
         --[[ If the player is touching the ground and is falling, ground the player ]]
         if player.isFalling then
           if fixA:getCategory() == CATEGORY.GROUND or fixB:getCategory() == CATEGORY.GROUND then
