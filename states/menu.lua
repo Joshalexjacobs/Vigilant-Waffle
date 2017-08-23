@@ -12,7 +12,7 @@ end
 
 function menu:keypressed(key, code)
   -- pressed enter/space
-  if key == 'space' or key == 'return' then -- quit on escape
+  if key == 'space' or key == 'return' or key == 'm' or key == 'n' then -- quit on escape
     Gamestate.switch(game) -- swtich to game screen
   end
 end
