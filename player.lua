@@ -141,6 +141,7 @@ local function shoot(dt, player)
         player.state = "shootingUp"
       elseif player.dir.y == 0 then
         addBullet(x + offD, y + 3.5, player.dir)
+        -- player.body:applyForce(-10 * player.dir.x, 0) -- player recoil
         player.state = "horizontal"
       elseif player.dir.y == -1 then
         addBullet(x + offD, y - 1, player.dir)
