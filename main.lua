@@ -9,6 +9,7 @@ Gamestate = require "lib/gamestate"
 anim8 = require "lib/anim8"
 require "lib/maid64"
 require "lib/timer"
+require "ps4Controller"
 
 -- states
 require "states/menu"
@@ -50,6 +51,9 @@ function love.load(arg)
   love.physics.setMeter(32)
 
   love.graphics.setDefaultFilter('nearest', 'nearest')
+
+  -- loadController
+  loadPS4Controller()
 
   Gamestate.registerEvents()
   -- Gamestate.switch(game) -- switch to game

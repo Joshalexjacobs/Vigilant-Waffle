@@ -18,7 +18,9 @@ function menu:keypressed(key, code)
 end
 
 function menu:update(dt)
-
+  if pressCircle() or pressX() or pressStart() then
+    Gamestate.switch(game) -- swtich to game screen
+  end
 end
 
 function menu:draw()

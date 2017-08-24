@@ -33,6 +33,7 @@ local player = {
   isFalling = true,
   isJumping = false, -- determines player jump until reaching the peak
   isDead = false,
+  isShooting = false,
   state = "idle"
 }
 
@@ -90,6 +91,10 @@ local function flip(player)
   player.dir.x = -player.dir.x -- flip their direction as well
 end
 
+local function isJumping()
+  return love.keyboard.isDown('n') or pressX()
+end
+
 local function jump(player)
   player.curAnim = 4
   player.isJumping = true
@@ -105,48 +110,32 @@ local function kill(player)
   player.curAnim = 7
 end
 
-player.update = function(dt)
-  --[[ Update player anim ]]
-  player.animations[player.curAnim]:update(dt)
+local function moveLeft(player)
+  return love.keyboard.isDown('a') or dPadLeft()
+end
 
-  if player.isDead == false then
-    --[[ Player left/right movement ]]
-    if love.keyboard.isDown('a') and love.keyboard.isDown('d') == false then
-      player.body:applyForce(-player.speed, 0)
-      if player.isFalling == false then
-        player.curAnim = 2
-      end
-      if player.dir.x ~= -1 then
-        flip(player)
-      end
-    elseif love.keyboard.isDown('d') and love.keyboard.isDown('a') == false then
-      player.body:applyForce(player.speed, 0)
-      if player.isFalling == false then
-        player.curAnim = 2
-      end
-      if player.dir.x ~= 1 then
-        flip(player)
-      end
-    end
+local function moveRight(player)
+  return love.keyboard.isDown('d') or dPadRight()
+end
 
-    if love.keyboard.isDown('w') and love.keyboard.isDown('m') then
-      if love.keyboard.isDown('a') or love.keyboard.isDown('d') then
-        player.curAnim = 5
-        player.dir.y = -1
-      else
-        player.dir.y = -1
-      end
-    else
-      player.dir.y = 0
-    end
+local function lookUp(player)
+  return (love.keyboard.isDown('w') or dPadUp()) and player.isShooting
+end
 
-    --[[ Player Shoot ]]
-    if love.keyboard.isDown('m') and updateTimer(dt, "shoot", player.timers) then
+local function isShooting()
+  return love.keyboard.isDown('m') or pressCircle()
+end
+
+local function shoot(dt, player)
+  --[[ Player Shoot ]]
+  if isShooting() then
+    if updateTimer(dt, "shoot", player.timers) then
+      player.isShooting = true
       local x, y = player.body:getWorldPoints(player.shape:getPoints())
       local offD = 0
       if player.dir.x == 1 then offD = 5 else offD = -2 end
 
-      if player.dir.y == -1 and love.keyboard.isDown('a') == false and love.keyboard.isDown('d') == false then
+      if player.dir.y == -1 and moveLeft() == false and moveRight() == false then
         local dir = {x = 0, y = player.dir.y}
         addBullet(x + 2, y - 4, dir)
         player.state = "shootingUp"
@@ -159,12 +148,53 @@ player.update = function(dt)
       end
       resetTimer(player.shootRate, "shoot", player.timers)
     end
+  else
+    player.isShooting = false
+  end
+end
+
+local function move(player)
+  --[[ Player left/right movement ]]
+  if moveLeft(player) then
+    player.body:applyForce(-player.speed, 0)
+    if player.isFalling == false then
+      player.curAnim = 2
+    end
+    if player.dir.x ~= -1 then
+      flip(player)
+    end
+  elseif moveRight(player) then
+    player.body:applyForce(player.speed, 0)
+    if player.isFalling == false then
+      player.curAnim = 2
+    end
+    if player.dir.x ~= 1 then
+      flip(player)
+    end
+  end
+
+  --[[ Player looking up ]]
+  if lookUp(player) then
+    player.dir.y = -1
+    player.curAnim = 5
+  else
+    player.dir.y = 0
+  end
+end
+
+player.update = function(dt)
+  --[[ Update player anim ]]
+  player.animations[player.curAnim]:update(dt)
+
+  if player.isDead == false then
+    move(player)
+    shoot(dt, player)
 
     --[[ Get the player's current X and Y velocity ]]
     local dx, dy = player.body:getLinearVelocity()
 
     --[[ Player Jump ]]
-    if love.keyboard.isDown('n') and player.isFalling == false then -- and player is touching the ground
+    if isJumping() and player.isFalling == false then -- and player is touching the ground
       player.state = "jumping"
       jump(player)
     end
@@ -184,13 +214,13 @@ player.update = function(dt)
 
     --[[ Play idle animation ]]
     if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
-      and not love.keyboard.isDown('m') then
+      and isShooting() == false then
       player.curAnim = 1
     elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
-      and love.keyboard.isDown('m') and player.state ~= "shootingUp" then
+      and isShooting() and player.state ~= "shootingUp" then
       player.curAnim = 6
     elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
-      and love.keyboard.isDown('m') and player.state == "shootingUp" then
+      and isShooting() and player.state == "shootingUp" then
       player.curAnim = 8
     end
 
@@ -206,7 +236,7 @@ player.update = function(dt)
 
     for i = 1, #contacts do
       if contacts[i]:isTouching() then
-        local fixA, fixB, fixC = contacts[i]:getFixtures()
+        local fixA, fixB = contacts[i]:getFixtures()
         if fixB:getCategory() == CATEGORY.ENEMY or fixA:getCategory() == CATEGORY.ENEMY then
           kill(player)
         end
@@ -241,7 +271,7 @@ player.draw = function()
    love.graphics.setColor(255, 255, 255)
   end
 
- --love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
+  --love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
 end
 
 return player
