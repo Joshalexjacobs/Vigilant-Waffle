@@ -15,7 +15,7 @@ require "ps4Controller"
 require "states/menu"
 require "states/game"
 
-world = love.physics.newWorld(0, 9.81 * 32, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
+world = love.physics.newWorld(0, 9.81 * 64, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
 
 DEBUG = false
 

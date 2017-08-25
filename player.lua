@@ -8,7 +8,7 @@ local player = {
   offX = -5,
   offY = -5.5,
   speed = 50,
-  jumpStrength = -100, -- determines height of player jump
+  jumpStrength = -150, -- determines height of player jump
   --dir = 1, -- 1 = right, -1 = left
   dir = {x = 1, y = 0},
   --dirY = 0,
@@ -50,7 +50,7 @@ end
 
 player.load = function()
   --[[ Physics setup ]]
-  player.body = love.physics.newBody(world, 95, 75, "dynamic")
+  player.body = love.physics.newBody(world, 125, 200, "dynamic")
   player.shape = love.physics.newRectangleShape(0, 0, player.w, player.h)
   player.fixture = love.physics.newFixture(player.body, player.shape, 1)
 
