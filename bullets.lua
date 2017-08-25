@@ -5,12 +5,12 @@ local bullet = {
   y = 10,
   w = 2,
   h = 2,
-  offX = -3,
-  offY = -2,
+  offX = -8, -- -3
+  offY = -8, -- -2
   speedX = 250, -- 50
   dir = {x = 0, y = 0},
   -- basic player assets
-  spriteSheet = "img/bullet.png",
+  spriteSheet = "img/bullet2.png",
   spriteGrid = nil,
   animations = {},
   curAnim = 1,
@@ -29,7 +29,7 @@ local bulletList = {}
 
 function loadBullets()
   -- animations/sprites
-  bullet.spriteGrid = anim8.newGrid(8, 8, 16, 32, 0, 0, 0)
+  bullet.spriteGrid = anim8.newGrid(16, 16, 32, 64, 0, 0, 0)
   bullet.spriteSheet = maid64.newImage(bullet.spriteSheet)
   bullet.animations = {
     anim8.newAnimation(bullet.spriteGrid("1-2", 1), 0.03, "pauseAtEnd"),  -- 1 idle
@@ -95,6 +95,9 @@ function updateBullet(dt)
 
     if updateTimer(dt, "life", newBullet.timers) and newBullet.isDead == false then
       newBullet.isDead = true
+      if checkTimer("dead", newBullet.timers) == false then
+        addTimer(0.0, "dead", newBullet.timers)
+      end
     end
 
     if newBullet.isDead then
@@ -114,5 +117,11 @@ function drawBullet()
   for i, newBullet in ipairs(bulletList) do
     local x, y = newBullet.body:getWorldPoints(newBullet.shape:getPoints())
     newBullet.animations[newBullet.curAnim]:draw(newBullet.spriteSheet, x + newBullet.offX, y + newBullet.offY)
+
+    if DEBUG then
+      -- love.graphics.setColor(255, 0, 0)
+      -- love.graphics.polygon("line", newBullet.body:getWorldPoints(newBullet.shape:getPoints()))
+    end
+    -- love.graphics.setColor(255, 255, 255)
   end
 end

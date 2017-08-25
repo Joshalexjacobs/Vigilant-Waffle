@@ -1,13 +1,13 @@
 --player.lua
 
 local player = {
-  x = 25,
-  y = 16,
+  x = 200,
+  y = 200,
   w = 6,
   h = 22, -- 9
   offX = -5,
   offY = -5.5,
-  speed = 50,
+  speed = 60,
   jumpStrength = -150, -- determines height of player jump
   --dir = 1, -- 1 = right, -1 = left
   dir = {x = 1, y = 0},
@@ -50,7 +50,7 @@ end
 
 player.load = function()
   --[[ Physics setup ]]
-  player.body = love.physics.newBody(world, 125, 200, "dynamic")
+  player.body = love.physics.newBody(world, player.x, player.y, "dynamic")
   player.shape = love.physics.newRectangleShape(0, 0, player.w, player.h)
   player.fixture = love.physics.newFixture(player.body, player.shape, 1)
 
@@ -136,18 +136,18 @@ local function shoot(dt, player)
       player.isShooting = true
       local x, y = player.body:getWorldPoints(player.shape:getPoints())
       local offD = 0
-      if player.dir.x == 1 then offD = 5 else offD = -2 end
+      if player.dir.x == 1 then offD = 5 else offD = -7 end
 
       if player.dir.y == -1 and moveLeft() == false and moveRight() == false then
         local dir = {x = 0, y = player.dir.y}
-        addBullet(x + 2, y - 4, dir)
+        addBullet(x - 1, y - 8, dir)
         player.state = "shootingUp"
       elseif player.dir.y == 0 then
-        addBullet(x + offD, y + 3.5, player.dir)
+        addBullet(x + offD, y + 3, player.dir)
         -- player.body:applyForce(-10 * player.dir.x, 0) -- player recoil
         player.state = "horizontal"
       elseif player.dir.y == -1 then
-        addBullet(x + offD, y - 1, player.dir)
+        addBullet(x + offD, y - 4, player.dir)
         player.state = "angled"
       end
       resetTimer(player.shootRate, "shoot", player.timers)
