@@ -31,6 +31,7 @@ function copy(obj, seen)
 end
 
 function love.load(arg)
+  -- love.window.setMode(160*4, 144*2.97, {resizable=true, vsync=true, minwidth=200, minheight=200})
   love.window.setMode(160*4, 144*2.97, {resizable=true, vsync=true, minwidth=200, minheight=200})
 
   -- load fonts
@@ -42,7 +43,9 @@ function love.load(arg)
 
   -- setup maid64
   --maid64.setup(96, 64)
-  maid64.setup(96*2, 64*2)
+  -- maid64.setup(96*2, 64*2)
+  -- maid64.setup(96*4, 64*4)
+  maid64.setup(102*4, 64*4)
 
   -- seed love.math.rand() using os time
   math.randomseed(os.time())

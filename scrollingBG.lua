@@ -1,7 +1,7 @@
 --scrollingBG.lua
 
 local background = {
-  sprite = "img/bg2.png",
+  sprite = "img/bg3.png",
   x1 = 0,
   y1 = 0,
   x2 = 0,
