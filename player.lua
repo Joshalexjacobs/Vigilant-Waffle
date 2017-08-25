@@ -3,12 +3,12 @@
 local player = {
   x = 25,
   y = 16,
-  w = 3,
-  h = 9,
-  offX = -2.5,
-  offY = -2,
-  speed = 30,
-  jumpStrength = -75, -- determines height of player jump
+  w = 6,
+  h = 22, -- 9
+  offX = -5,
+  offY = -5.5,
+  speed = 50,
+  jumpStrength = -100, -- determines height of player jump
   --dir = 1, -- 1 = right, -1 = left
   dir = {x = 1, y = 0},
   --dirY = 0,
@@ -64,7 +64,7 @@ player.load = function()
   player.fixture:setMask(CATEGORY.BULLET)
 
   --[[ Player animations/sprites]]
-  player.spriteGrid = anim8.newGrid(8, 16, 24, 144, 0, 0, 0)
+  player.spriteGrid = anim8.newGrid(16, 32, 48, 288, 0, 0, 0)
   player.spriteSheet = maid64.newImage(player.spriteSheet)
   player.animations = {
                                     -- col, row
@@ -78,6 +78,9 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid("1-2", 7), 0.09), -- 8 up shot
   }
 
+  print("old mass", player.body:getMass())
+  player.body:setMass(0.0263671875)
+  print("new mass", player.body:getMass())
   --[[ Set up player timers ]]
   addTimer(0.0, "shoot", player.timers)
   addTimer(0.0, "jump", player.timers)

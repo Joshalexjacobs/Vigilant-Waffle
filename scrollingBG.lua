@@ -5,7 +5,7 @@ local background = {
   x1 = 0,
   y1 = 0,
   x2 = 0,
-  y2 = -256*2,
+  y2 = -512*2,
   w = 0,
   h = 0,
   -- functions

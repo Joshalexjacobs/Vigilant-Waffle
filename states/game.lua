@@ -43,8 +43,8 @@ function game:enter()
 
   --let's create the ground
   objects.ground = {}
-  objects.ground.body = love.physics.newBody(world, 128 / 2, 128 - 5 / 2)
-  objects.ground.shape = love.physics.newRectangleShape(128 * 2, 5)
+  objects.ground.body = love.physics.newBody(world, 160, 256)
+  objects.ground.shape = love.physics.newRectangleShape(496, 5)
   objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape); --attach shape to body
   objects.ground.sprite = maid64.newImage("img/platform.png")
   objects.ground.fixture:setCategory(4)
@@ -60,8 +60,8 @@ function game:enter()
   objects.wallRight = {}
   --objects.wallRight.body = love.physics.newBody(world, -2.5 / 2, 64 / 2)
   --objects.wallRight.body = love.physics.newBody(world, -1, 64 / 2)
-  objects.wallRight.body = love.physics.newBody(world, -1, 128 / 2)
-  objects.wallRight.shape = love.physics.newRectangleShape(5, 128)
+  objects.wallRight.body = love.physics.newBody(world, -1, 128)
+  objects.wallRight.shape = love.physics.newRectangleShape(5, 256)
   objects.wallRight.fixture = love.physics.newFixture(objects.wallRight.body, objects.wallRight.shape);
   objects.wallRight.fixture:setCategory(3)
 
