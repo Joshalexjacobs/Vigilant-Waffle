@@ -44,8 +44,8 @@ player.reset = function()
   player.fixture:setMask()
   player.animations[7]:gotoFrame(1)
   player.animations[7]:resume()
-  player.body:setX(95)
-  player.body:setY(75)
+  player.body:setX(200)
+  player.body:setY(200)
 end
 
 player.load = function()

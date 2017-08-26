@@ -2,17 +2,17 @@
 
 local pipes = {
     name = "pipes",
-    hp = 35,
+    hp = 15,
     x = -50,
     y = -50,
-    w = 20,
-    h = 20,
-    offX = -5,
+    w = 50,
+    h = 55,
+    offX = -7,
     offY = -7,
-    speed = 10,
+    speed = 22,
     dir = 1,
     -- pipes assets
-    spriteSheet = "img/enemies/skullPipe.png",
+    spriteSheet = "img/enemies/skullPipe2.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
@@ -51,7 +51,7 @@ pipes.load = function(entity)
   entity.body:setLinearDamping(1.25)
 
   --[[ Load pipes images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(32, 44, 96, 88, 0, 0, 0)
+  entity.spriteGrid = anim8.newGrid(64, 88, 192, 176, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid("1-2", 1), 0.1), -- 1 idle

@@ -132,7 +132,8 @@ function game:draw()
 
   if player.isDead then
     love.graphics.setFont(bigFont)
-    love.graphics.printf("You Are Dead.", 47, 50, 200)
+    -- love.graphics.printf("You Are Dead.", 47, 50, 200)
+    love.graphics.printf("You Are Dead.", 155, 100, 200)
     love.graphics.setFont(smallFont)
   end
 
