@@ -7,7 +7,7 @@ local bullet = {
   h = 2,
   offX = -8, -- -3
   offY = -8, -- -2
-  speedX = 250, -- 50
+  speedX = 500, -- 250
   dir = {x = 0, y = 0},
   -- basic player assets
   spriteSheet = "img/bullet2.png",
@@ -41,7 +41,7 @@ end
 function addBullet(x, y, dir)
   local newBullet = copy(bullet, newBullet)
   newBullet.x, newBullet.y, newBullet.dir.x, newBullet.dir.y = x, y, dir.x, dir.y
-  newBullet.rand = love.math.random(-1, 1) * 0.01
+  newBullet.rand = love.math.random(-1, 1) * 0.02
   -- physics
   newBullet.body = love.physics.newBody(world, x, y, "dynamic")
   newBullet.shape = love.physics.newRectangleShape(0, 0, newBullet.w, newBullet.h)

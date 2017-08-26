@@ -2,17 +2,17 @@
 
 local skull = {
     name = "skull",
-    hp = 5,
+    hp = 4,
     x = -50,
     y = -50,
-    w = 6,
-    h = 12,
-    offX = -4,
-    offY = -2.5,
-    speed = 12,
+    w = 12, -- 6
+    h = 22, -- 12
+    offX = -10, -- -4
+    offY = -7, -- -2.5
+    speed = 24,
     dir = 1,
     -- skull assets
-    spriteSheet = "img/enemies/skull.png",
+    spriteSheet = "img/enemies/skull2.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
@@ -46,10 +46,10 @@ skull.load = function(entity)
   entity.body:setLinearDamping(0.05)
 
   --[[ Restitution (determines bounce) ]]
-  entity.fixture:setRestitution(0.2)
+  entity.fixture:setRestitution(0.4)
 
   --[[ Load Skull images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 16, 32, 16, 0, 0, 0)
+  entity.spriteGrid = anim8.newGrid(32, 32, 64, 32, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid("1-2", 1), 0.2) -- idle/float
