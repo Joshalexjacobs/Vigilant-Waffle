@@ -136,18 +136,18 @@ local function shoot(dt, player)
       player.isShooting = true
       local x, y = player.body:getWorldPoints(player.shape:getPoints())
       local offD = 0
-      if player.dir.x == 1 then offD = 5 else offD = -7 end
+      if player.dir.x == 1 then offD = 10 else offD = -3 end
 
       if player.dir.y == -1 and moveLeft() == false and moveRight() == false then
         local dir = {x = 0, y = player.dir.y}
-        addBullet(x - 1, y - 8, dir)
+        addBullet(x + 4, y - 3, dir)
         player.state = "shootingUp"
       elseif player.dir.y == 0 then
-        addBullet(x + offD, y + 3, player.dir)
+        addBullet(x + offD, y + 9, player.dir)
         -- player.body:applyForce(-10 * player.dir.x, 0) -- player recoil
         player.state = "horizontal"
       elseif player.dir.y == -1 then
-        addBullet(x + offD, y - 4, player.dir)
+        addBullet(x + offD, y, player.dir)
         player.state = "angled"
       end
       resetTimer(player.shootRate, "shoot", player.timers)
