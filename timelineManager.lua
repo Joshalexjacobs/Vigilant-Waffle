@@ -2,8 +2,8 @@
 
 local timeline = {}
 
-local timelineName = "timelines/demo.txt"
--- local timelineName = "timelines/bats.txt"
+-- local timelineName = "timelines/demo.txt"
+local timelineName = "timelines/bats.txt"
 
 local time = 0
 
@@ -36,9 +36,9 @@ function loadTimelineManager()
     end
   end
 
-  for i = 1, 5, 1 do
-    print(timeline[i].name .. " - " .. timeline[i].time .. " @ " .. timeline[i].x .. ", " .. timeline[i].y)
-  end
+  -- for i = 1, 5, 1 do
+  --   print(timeline[i].name .. " - " .. timeline[i].time .. " @ " .. timeline[i].x .. ", " .. timeline[i].y)
+  -- end
 
   return true
 end

@@ -52,8 +52,8 @@ function game:enter()
   objects.wallLeft = {}
   --objects.wallLeft.body = love.physics.newBody(world, 64 + 2.5 / 2, 64 / 2)
   --objects.wallLeft.body = love.physics.newBody(world, 82, 64 / 2)
-  objects.wallLeft.body = love.physics.newBody(world, 194, 128 / 2)
-  objects.wallLeft.shape = love.physics.newRectangleShape(5, 128)
+  objects.wallLeft.body = love.physics.newBody(world, 410, 128) --  388
+  objects.wallLeft.shape = love.physics.newRectangleShape(5, 256)
   objects.wallLeft.fixture = love.physics.newFixture(objects.wallLeft.body, objects.wallLeft.shape);
   objects.wallLeft.fixture:setCategory(3)
 

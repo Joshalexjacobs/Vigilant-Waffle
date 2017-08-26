@@ -20,9 +20,10 @@ local bullet = {
   fixture = nil,
   -- other
   timers = {},
-  life = 1.0,
+  life = 2.0,
   category = CATEGORY.BULLET, -- 2
-  isDead = false
+  isDead = false,
+  rand = 0
 }
 
 local bulletList = {}
@@ -40,7 +41,7 @@ end
 function addBullet(x, y, dir)
   local newBullet = copy(bullet, newBullet)
   newBullet.x, newBullet.y, newBullet.dir.x, newBullet.dir.y = x, y, dir.x, dir.y
-
+  newBullet.rand = love.math.random(-1, 1) * 0.01
   -- physics
   newBullet.body = love.physics.newBody(world, x, y, "dynamic")
   newBullet.shape = love.physics.newRectangleShape(0, 0, newBullet.w, newBullet.h)
@@ -65,6 +66,7 @@ function updateBullet(dt)
 
     --newBullet.body:setLinearVelocity(newBullet.speedX * newBullet.dir, 0)
     newBullet.body:setLinearVelocity(newBullet.speedX * newBullet.dir.x, newBullet.speedX * newBullet.dir.y)
+    -- newBullet.body:setLinearVelocity(newBullet.speedX * (newBullet.dir.x +newBullet.rand), newBullet.speedX * (newBullet.dir.y + newBullet.rand))
 
     local dx, dy = newBullet.body:getLinearVelocity()
 

@@ -2,17 +2,17 @@
 
 local bat = {
     name = "bat",
-    hp = 5,
+    hp = 3,
     x = -50,
     y = -50,
-    w = 12,
-    h = 8,
-    offX = -1.5,
-    offY = -3,
+    w = 14, -- 12
+    h = 8, -- 8
+    offX = -8,
+    offY = -11,
     speed = 20,
     dir = 1,
     -- bat assets
-    spriteSheet = "img/enemies/bat.png",
+    spriteSheet = "img/enemies/bat2.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
@@ -35,7 +35,7 @@ local bat = {
     destination = {x = 150, y = 10},
     diameter = {
       name = "diameter",
-      r = 10,
+      r = 11,
       body = nil,
       shape = nil,
       fixture = nil,
@@ -61,8 +61,10 @@ bat.load = function(entity)
   entity.joint = love.physics.newWeldJoint(entity.body, entity.diameter.body, jointX, jointY + entity.h / 2, false)
 
   -- generate first destination
-  entity.destination.x = math.random(5, 185)
-  entity.destination.y = math.random(10, 115)
+  -- entity.destination.x = math.random(5, 185)
+  entity.destination.x = math.random(5, 400)
+  -- entity.destination.y = math.random(10, 115)
+  entity.destination.y = math.random(10, 240)
 
   -- set categories
   entity.fixture:setCategory(entity.category)
@@ -79,7 +81,7 @@ bat.load = function(entity)
   entity.body:setLinearDamping(0.05)
 
   --[[ Load bat images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 16, 48, 32, 0, 0, 0)
+  entity.spriteGrid = anim8.newGrid(32, 32, 96, 64, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid("1-3", 1, "1-2", 2, "2-1", 2, "3-1", 1), 0.05), -- 1 idle
@@ -140,8 +142,8 @@ bat.behaviour = function(dt, entity)
     --[[Move bat to random point within elevator walls]]
     local testX, testY = entity.diameter.body:getWorldPoints(entity.diameter.shape:getPoint())
     if entity.diameter.shape:testPoint(testX, testY, 0, entity.destination.x, entity.destination.y) then
-      entity.destination.x = math.random(5, 185)
-      entity.destination.y = math.random(10, 115)
+      entity.destination.x = math.random(5, 400)
+      entity.destination.y = math.random(10, 240)
     end
 
     local tx = entity.destination.x - entity.x
