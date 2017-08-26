@@ -11,6 +11,8 @@ local bullet = {
   dir = {x = 0, y = 0},
   -- basic player assets
   spriteSheet = "img/bullet2.png",
+  -- spriteSheet = "img/newBullet.png",
+  -- spriteSheet = "img/newbullet2.png",
   spriteGrid = nil,
   animations = {},
   curAnim = 1,
@@ -31,10 +33,14 @@ local bulletList = {}
 function loadBullets()
   -- animations/sprites
   bullet.spriteGrid = anim8.newGrid(16, 16, 32, 64, 0, 0, 0)
+  -- bullet.spriteGrid = anim8.newGrid(32, 16, 96, 64, 0, 0, 0)
   bullet.spriteSheet = maid64.newImage(bullet.spriteSheet)
   bullet.animations = {
     anim8.newAnimation(bullet.spriteGrid("1-2", 1), 0.03, "pauseAtEnd"),  -- 1 idle
+    -- anim8.newAnimation(bullet.spriteGrid(1, 1, 3, 1), 0.02, "pauseAtEnd"),  -- 1 idle
+
     anim8.newAnimation(bullet.spriteGrid("1-2", 2, 2, 4), 0.035, "pauseAtEnd")   -- 2 dead
+      -- anim8.newAnimation(bullet.spriteGrid("1-3", "2-4"), 0.05, "pauseAtEnd"),   -- 2 dead
   }
 end
 
@@ -65,8 +71,8 @@ function updateBullet(dt)
     newBullet.animations[newBullet.curAnim]:update(dt)
 
     --newBullet.body:setLinearVelocity(newBullet.speedX * newBullet.dir, 0)
-    newBullet.body:setLinearVelocity(newBullet.speedX * newBullet.dir.x, newBullet.speedX * newBullet.dir.y)
-    -- newBullet.body:setLinearVelocity(newBullet.speedX * (newBullet.dir.x +newBullet.rand), newBullet.speedX * (newBullet.dir.y + newBullet.rand))
+    -- newBullet.body:setLinearVelocity(newBullet.speedX * newBullet.dir.x, newBullet.speedX * newBullet.dir.y)
+    newBullet.body:setLinearVelocity(newBullet.speedX * (newBullet.dir.x +newBullet.rand), newBullet.speedX * (newBullet.dir.y + newBullet.rand))
 
     local dx, dy = newBullet.body:getLinearVelocity()
 
@@ -121,9 +127,9 @@ function drawBullet()
     newBullet.animations[newBullet.curAnim]:draw(newBullet.spriteSheet, x + newBullet.offX, y + newBullet.offY)
 
     if DEBUG then
-      -- love.graphics.setColor(255, 0, 0)
-      -- love.graphics.polygon("line", newBullet.body:getWorldPoints(newBullet.shape:getPoints()))
+      love.graphics.setColor(255, 0, 0)
+      love.graphics.polygon("line", newBullet.body:getWorldPoints(newBullet.shape:getPoints()))
     end
-    -- love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(255, 255, 255)
   end
 end
