@@ -46,7 +46,7 @@ skull.load = function(entity)
   entity.body:setLinearDamping(0.05)
 
   --[[ Restitution (determines bounce) ]]
-  entity.fixture:setRestitution(0.4)
+  entity.fixture:setRestitution(0.3)
 
   --[[ Load Skull images/prep animations ]]
   entity.spriteGrid = anim8.newGrid(32, 32, 64, 32, 0, 0, 0)

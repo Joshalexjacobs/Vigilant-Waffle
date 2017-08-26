@@ -6,8 +6,8 @@ menu = {}
 
 function menu:enter()
   -- test sprite
-  titleImg = maid64.newImage("img/title2.png")
-  botImg = maid64.newImage("img/titleBot.png")
+  titleImg = maid64.newImage("img/title3.png")
+  -- botImg = maid64.newImage("img/titleBot.png")
 end
 
 function menu:keypressed(key, code)

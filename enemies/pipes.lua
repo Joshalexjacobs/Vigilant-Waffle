@@ -108,7 +108,11 @@ pipes.behaviour = function(dt, entity)
     if updateTimer(dt, "moveToView", entity.timers) then
       if entity.curAnim == 1 then entity.curAnim = 2 end
       if updateTimer(dt, "spawn", entity.timers) and entity.skullCount < entity.skullMax then
-        addEnemy("skull", entity.x + 10, entity.y + 4, entity.dir) -- addEnemy
+        if tonumber(entity.dir) == 1 then
+          addEnemy("skull", entity.x + 15, entity.y + 8, entity.dir) -- addEnemy
+        else
+          addEnemy("skull", entity.x + 30, entity.y + 8, entity.dir) -- addEnemy
+        end
         resetTimer(1.75, "spawn", entity.timers)-- resetTimer
         entity.skullCount = entity.skullCount + 1
       elseif entity.skullCount >= entity.skullMax and entity.curAnim ~= 3 then
