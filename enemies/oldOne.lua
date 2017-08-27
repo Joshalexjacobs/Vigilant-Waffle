@@ -3,8 +3,8 @@
 local oldOne = {
     name = "oldOne",
     hp = 25,
-    x = 5,
-    y = 5,
+    x = -50,
+    y = -50,
     w = 12,
     h = 12,
     offX = -2,
@@ -43,7 +43,7 @@ oldOne.load = function(entity)
   entity.fixture:setUserData(entity)
   entity.body:setFixedRotation(true)
 
-  entity.body:setGravityScale(0)
+  entity.body:setGravityScale(1)
   entity.body:setMass(1000)
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
@@ -66,6 +66,7 @@ oldOne.load = function(entity)
   addTimer(0.0, "backToIdle", entity.timers)
   addTimer(0.5, "float", entity.timers)
   addTimer(0.0, "flip", entity.timers)
+  addTimer(12.0, "gravity", entity.timers)
 end
 
 --[[ flip ]]
@@ -85,6 +86,10 @@ oldOne.behaviour = function(dt, entity)
   entity.animations[entity.curAnim]:update(dt)
 
   if entity.body:isDestroyed() == false then
+    if updateTimer(dt, "gravity", entity.timers) then
+      entity.body:setGravityScale(0)
+    end
+
     local contacts = entity.body:getContactList()
 
     for i = 1, #contacts do

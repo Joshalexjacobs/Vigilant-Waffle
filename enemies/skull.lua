@@ -59,6 +59,15 @@ skull.load = function(entity)
 
   --[[ Setup Skull Timers ]]
   addTimer(0.0, "isHit", entity.timers)
+  addTimer(0.0, "flip", entity.timers)
+end
+
+--[[ flip ]]
+local function flip(entity)
+  for i = 1, table.getn(entity.animations) do
+    entity.animations[i]:flipH()
+  end
+  entity.dir = - entity.dir
 end
 
 skull.damage = function(a, entity)
@@ -73,6 +82,7 @@ end
 
 skull.kill = function(entity)
   entity.body:destroy()
+  setShake(0.2, 0.5)
 end
 
 skull.behaviour = function(dt, entity)
@@ -87,12 +97,12 @@ skull.behaviour = function(dt, entity)
       if contacts[i]:isTouching() then
         b, a = contacts[i]:getFixtures()
         if a:getCategory() == CATEGORY.BULLET and a:isDestroyed() == false then
-          entity.isHit = true
-          resetTimer(0.05, "isHit", entity.timers)
-          entity.hp = entity.hp - 1
-          a:destroy()
+          entity.damage(a, entity)
         elseif b:getCategory() == CATEGORY.BULLET and b:isDestroyed() == false then
           entity.damage(b, entity)
+        elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) then
+          flip(entity)
+          resetTimer(0.20, "flip", entity.timers)
         end
       end
     end

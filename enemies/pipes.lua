@@ -24,6 +24,7 @@ local pipes = {
     load = nil,
     behaviour = nil,
     draw = nil,
+    damage = nil,
     kill = nil,
     -- other
     timers = {},
@@ -76,6 +77,16 @@ local function flip(entity)
   entity.dir = -entity.dir -- flip their direction as well
 end
 
+pipes.damage = function(a, entity)
+  entity.isHit = true
+  resetTimer(0.05, "isHit", entity.timers)
+  entity.hp = entity.hp - 1
+
+  if a ~= nil then
+    a:destroy()
+  end
+end
+
 pipes.kill = function(entity)
   entity.body:destroy()
 end
@@ -91,10 +102,9 @@ pipes.behaviour = function(dt, entity)
       if contacts[i]:isTouching() then
         b, a = contacts[i]:getFixtures()
         if a:getCategory() == CATEGORY.BULLET and a:isDestroyed() == false then
-          entity.isHit = true
-          resetTimer(0.05, "isHit", entity.timers)
-          entity.hp = entity.hp - 1
-          a:destroy()
+          entity.damage(a, entity)
+        elseif b:getCategory() == CATEGORY.BULLET and b:isDestroyed() == false then
+          entity.damage(b, entity)
         end
       end
     end

@@ -7,6 +7,7 @@ LINKS TO CHECKOUT:
 
 Gamestate = require "lib/gamestate"
 anim8 = require "lib/anim8"
+require "cameraControls"
 require "lib/maid64"
 require "lib/timer"
 require "ps4Controller"
@@ -15,7 +16,7 @@ require "ps4Controller"
 require "states/menu"
 require "states/game"
 
-world = love.physics.newWorld(0, 9.81 * 64, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
+world = love.physics.newWorld(0, 9.81 * 64, true) -- create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
 
 DEBUG = false
 
@@ -32,7 +33,7 @@ end
 
 function love.load(arg)
   -- love.window.setMode(160*4, 144*2.97, {resizable=true, vsync=true, minwidth=200, minheight=200})
-  love.window.setMode(160*4, 144*2.97, {resizable=true, vsync=true, minwidth=200, minheight=200})
+  love.window.setMode(160*4, 144*2.97, {resizable=true, vsync=true, minwidth=200, minheight=200}) -- 640 x 427
 
   -- load fonts
   smallestFont = love.graphics.newFont("lib/kenpixel_mini.ttf", 6)
@@ -46,6 +47,10 @@ function love.load(arg)
   -- maid64.setup(96*2, 64*2)
   -- maid64.setup(96*4, 64*4)
   maid64.setup(102*4, 64*4)
+
+  -- setup camera
+  -- cam = camera()
+  loadCamera()
 
   -- seed love.math.rand() using os time
   math.randomseed(os.time())
@@ -85,4 +90,5 @@ end
 function love.resize(w, h)
   -- this is used to resize the screen correctly
   maid64.resize(w, h)
+  loadCamera()
 end

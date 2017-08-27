@@ -109,7 +109,7 @@ end
 local function kill(player)
   player.body:applyForce(0, player.jumpStrength * 10)
   player.isDead = true
-  player.fixture:setMask(CATEGORY.ENEMY, CATEGORY.GROUND)
+  player.fixture:setMask(CATEGORY.ENEMY, CATEGORY.GROUND, CATEGORY.HEAD)
   player.curAnim = 7
 end
 
@@ -150,6 +150,8 @@ local function shoot(dt, player)
         addBullet(x + offD, y, player.dir)
         player.state = "angled"
       end
+
+      setShake(0.1, 0.2)
       resetTimer(player.shootRate, "shoot", player.timers)
     end
   else

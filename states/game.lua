@@ -104,11 +104,19 @@ function game:update(dt)
     updateTM()
 
     background.update(dt)
+
+    updateCamera(dt) -- camera
   end
 end
 
 function game:draw()
+  -- print(cam:position())
+  -- local camx, camy = cam:position()
+  -- print(cam:worldCoords(camx,camy))
+  -- print(cam:cameraCoords(camx,camy))
   maid64.start()
+  cam:attach()
+
 
   background.draw()
 
@@ -137,5 +145,7 @@ function game:draw()
     love.graphics.setFont(smallFont)
   end
 
+
+  cam:detach()
   maid64.finish()
 end
