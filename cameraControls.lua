@@ -17,7 +17,7 @@ function setShake(x, y)
   magnitude = y
 end
 
-function screenShake()
+local function screenShake()
   if getTimerStatus("shake", timers) == false then
     local x, y = cam:position()
     cam:lookAt(x + (love.math.random(-1, 1) * magnitude), y + (love.math.random(-1, 1) * magnitude))

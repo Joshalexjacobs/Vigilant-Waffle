@@ -110,21 +110,15 @@ function updateBullet(dt)
 
     local dx, dy = newBullet.body:getLinearVelocity()
 
-    --[[
-    if dx > newBullet.speedX and newBullet.dir == 1 then
-      newBullet.body:setLinearVelocity(newBullet.speedX, dy)
-    elseif dx < -newBullet.speedX and newBullet.dir == -1 then
-      newBullet.body:setLinearVelocity(-newBullet.speedX, dy)
-    end
-    --]]
-
     local contacts = newBullet.body:getContactList()
 
     for i = 1, #contacts do
       if contacts[i]:isTouching() then
         newBullet.isDead = true
         newBullet.curAnim = 2
+        -- setShake(0.05, 0.1)
         addTimer(0.5, "dead", newBullet.timers)
+
 
         if newBullet.angle == ( math.pi ) / 4 or newBullet.angle == ( math.pi * 7 ) / 4 then
           newBullet.angle = 0

@@ -78,9 +78,9 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid("1-2", 7), 0.09), -- 8 up shot
   }
 
-  print("old mass", player.body:getMass())
+  --[[ Set player's mass ]]
   player.body:setMass(0.0263671875)
-  print("new mass", player.body:getMass())
+
   --[[ Set up player timers ]]
   addTimer(0.0, "shoot", player.timers)
   addTimer(0.0, "jump", player.timers)
