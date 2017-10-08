@@ -3,6 +3,7 @@
 --[[
 LINKS TO CHECKOUT:
 - http://www.somethinghitme.com/2013/11/13/snippets-i-always-forget-movement/
+- IF VSYNC IS DISABLED OR BROKEN: https://gafferongames.com/post/fix_your_timestep/
 ]]
 
 Gamestate = require "lib/gamestate"

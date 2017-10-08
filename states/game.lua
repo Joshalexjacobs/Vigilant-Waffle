@@ -90,8 +90,8 @@ function game:update(dt)
     updateBullet(newDT)
     updateEnemy(newDT)
 
-    updateTime(newDT)
-    updateTM()
+    -- updateTime(newDT)
+    -- updateTM()
 
     background.update(newDT)
   else
@@ -141,7 +141,8 @@ function game:draw()
   if player.isDead then
     love.graphics.setFont(bigFont)
     -- love.graphics.printf("You Are Dead.", 47, 50, 200)
-    love.graphics.printf("You Are Dead.", 155, 100, 200)
+    love.graphics.printf("You Are Dead.", 105, 100, 200, "center")
+    love.graphics.printf(tostring(getTime()) .. 's', 105, 50, 200, "center")
     love.graphics.setFont(smallFont)
   end
 

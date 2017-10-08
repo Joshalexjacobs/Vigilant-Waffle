@@ -50,6 +50,10 @@ function updateTM()
   end
 end
 
+function getTime()
+  return time
+end
+
 function updateTime(dt)
   time = math.floor((time + dt )* (10 ^ 2) + 0.5) / (10 ^ 2)
 

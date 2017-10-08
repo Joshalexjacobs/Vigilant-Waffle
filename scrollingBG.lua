@@ -5,7 +5,7 @@ local background = {
   x1 = 0,
   y1 = 0,
   x2 = 0,
-  y2 = -512*2,
+  y2 = 1024,
   w = 0,
   h = 0,
   -- functions
@@ -13,7 +13,7 @@ local background = {
   update = nil,
   draw = nil,
   -- other
-  speed = 35 --35
+  speed = -100 -- -35
 }
 
 background.load = function ()
@@ -26,12 +26,12 @@ background.update = function (dt)
   background.y1 = background.y1 + move
   background.y2 = background.y2 + move
 
-  if background.y1 >= background.h then
-    background.y1 = -background.h
+  if background.y1 <= -background.h then
+    background.y1 = background.h
   end
 
-  if background.y2 >= background.h then
-    background.y2 = -background.h
+  if background.y2 <= -background.h then
+    background.y2 = background.h
   end
 end
 
