@@ -19,7 +19,7 @@ local bullet = {
   dir = {x = 0, y = 0},
   -- basic player assets
   -- spriteSheet = "img/bullet2.png",
-  spriteSheet = "img/newBullet.png",
+  spriteSheet = "img/newBullet3.png",
   -- spriteSheet = "img/newbullet2.png",
   spriteGrid = nil,
   animations = {},
@@ -42,7 +42,7 @@ local bulletList = {}
 function loadBullets()
   -- animations/sprites
   -- bullet.spriteGrid = anim8.newGrid(16, 16, 32, 64, 0, 0, 0)
-  bullet.spriteGrid = anim8.newGrid(16, 16, 48, 64, 0, 0, 0)
+  bullet.spriteGrid = anim8.newGrid(18, 16, 60, 64, 0, 0, 0)
   bullet.spriteSheet = maid64.newImage(bullet.spriteSheet)
   bullet.animations = {
     -- anim8.newAnimation(bullet.spriteGrid("1-2", 1), 0.03, "pauseAtEnd"),  -- 1 idle
