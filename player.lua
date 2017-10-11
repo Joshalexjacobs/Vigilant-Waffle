@@ -8,6 +8,7 @@ local player = {
   offX = -5,
   offY = -5.5,
   speed = 60,
+  actualJumpStrength = -150,
   jumpStrength = -150, -- determines height of player jump
   --dir = 1, -- 1 = right, -1 = left
   dir = {x = 1, y = 0},
@@ -255,7 +256,7 @@ player.update = function(dt)
           elseif fixB:getCategory() == CATEGORY.HEAD and updateTimer(dt, "jump", player.timers) then
             player.jumpStrength = -300
             jump(player)
-            player.jumpStrength = -75
+            player.jumpStrength = player.actualJumpStrength
 
             local entity = fixB:getUserData()
             fixB:getUserData().damage(nil, entity)
