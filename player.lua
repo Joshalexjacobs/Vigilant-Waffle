@@ -14,7 +14,8 @@ local player = {
   dir = {x = 1, y = 0},
   --dirY = 0,
   -- basic player assets
-  spriteSheet = "img/playerDying.png", -- spriteSheet = "img/player2Up.png"
+  spriteSheet = "img/playerRoll2.png", -- spriteSheet = "img/player2Up.png"
+  -- spriteSheet = "img/playerDying.png", -- spriteSheet = "img/player2Up.png"
   spriteGrid = nil,
   animations = {},
   curAnim = 1,
@@ -30,9 +31,12 @@ local player = {
   -- other
   timers = {},
   shootRate = 0.1,
+  rollTime = 0.3,
+  rollCooldownTime = 0.5,
   category = CATEGORY.PLAYER,
   isFalling = true,
   isJumping = false, -- determines player jump until reaching the peak
+  isRolling = false,
   isDead = false,
   isShooting = false,
   state = "idle"
@@ -65,7 +69,7 @@ player.load = function()
   player.fixture:setMask(CATEGORY.BULLET)
 
   --[[ Player animations/sprites]]
-  player.spriteGrid = anim8.newGrid(16, 32, 48, 288, 0, 0, 0)
+  player.spriteGrid = anim8.newGrid(16, 32, 48, 352, 0, 0, 0)
   player.spriteSheet = maid64.newImage(player.spriteSheet)
   player.animations = {
                                     -- col, row
@@ -77,6 +81,7 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid(1, 1, 2, 1), 0.09), -- 6 idle shot
     anim8.newAnimation(player.spriteGrid(3, 7, "1-3", 8, 1, 9), 0.125, "pauseAtEnd"), -- 7 dying
     anim8.newAnimation(player.spriteGrid("1-2", 7), 0.09), -- 8 up shot
+    anim8.newAnimation(player.spriteGrid("1-3", 10, 1, 11), 0.09), -- 9 roll
   }
 
   --[[ Set player's mass ]]
@@ -85,6 +90,8 @@ player.load = function()
   --[[ Set up player timers ]]
   addTimer(0.0, "shoot", player.timers)
   addTimer(0.0, "jump", player.timers)
+  addTimer(0.0, "roll", player.timers)
+  addTimer(0.0, "rollCooldown", player.timers)
 end
 
 --[[ Player animation flip function ]]
@@ -97,6 +104,10 @@ end
 
 local function isJumping()
   return love.keyboard.isDown('n') or pressX()
+end
+
+local function roll()
+  return love.keyboard.isDown('h') or pressCircle()
 end
 
 local function jump(player)
@@ -127,7 +138,7 @@ local function lookUp(player)
 end
 
 local function isShooting()
-  return love.keyboard.isDown('m') or pressCircle()
+  return love.keyboard.isDown('m') or rightBumper()
 end
 
 local function shoot(dt, player)
@@ -164,7 +175,7 @@ local function move(player)
   --[[ Player left/right movement ]]
   if moveLeft(player) then
     player.body:applyForce(-player.speed, 0)
-    if player.isFalling == false then
+    if player.isFalling == false and player.isRolling == false then
       player.curAnim = 2
     end
     if player.dir.x ~= -1 then
@@ -172,7 +183,7 @@ local function move(player)
     end
   elseif moveRight(player) then
     player.body:applyForce(player.speed, 0)
-    if player.isFalling == false then
+    if player.isFalling == false and player.isRolling == false then
       player.curAnim = 2
     end
     if player.dir.x ~= 1 then
@@ -181,7 +192,7 @@ local function move(player)
   end
 
   --[[ Player looking up ]]
-  if lookUp(player) then
+  if lookUp(player) and player.isRolling == false then
     player.dir.y = -1
     player.curAnim = 5
   else
@@ -201,7 +212,7 @@ player.update = function(dt)
     local dx, dy = player.body:getLinearVelocity()
 
     --[[ Player Jump ]]
-    if isJumping() and player.isFalling == false then -- and player is touching the ground
+    if isJumping() and player.isFalling == false and player.isRolling == false then -- and player is touching the ground
       player.state = "jumping"
       jump(player)
     end
@@ -219,16 +230,33 @@ player.update = function(dt)
       player.body:setLinearVelocity(-player.speed, dy)
     end
 
+    -- [[ Player Roll ]]
+    if updateTimer(dt, "rollCooldown", player.timers) and roll() and player.isFalling == false and player.isJumping == false 
+      and player.isRolling == false then
+      resetTimer(player.rollTime, "roll", player.timers)
+      player.fixture:setMask(CATEGORY.ENEMY, CATEGORY.BULLET, CATEGORY.HEAD)
+      player.isRolling = true
+      player.curAnim = 9
+    end
+
+    if updateTimer(dt, "roll", player.timers) == false then
+      player.body:setLinearVelocity(player.speed * 3 * player.dir.x, dy)
+    elseif player.isRolling then
+      player.fixture:setMask(CATEGORY.BULLET)
+      resetTimer(player.rollCooldownTime, "rollCooldown", player.timers)
+      player.isRolling = false
+      player.curAnim = 2
+    end
+
     --[[ Play idle animation ]]
-    if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
-      and isShooting() == false then
-      player.curAnim = 1
-    elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
-      and isShooting() and player.state ~= "shootingUp" then
-      player.curAnim = 6
-    elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and player.isFalling == false
-      and isShooting() and player.state == "shootingUp" then
-      player.curAnim = 8
+    if player.isFalling == false and player.isRolling == false then
+      if player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and isShooting() == false then
+        player.curAnim = 1
+      elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and isShooting() and player.state ~= "shootingUp" then
+        player.curAnim = 6
+      elseif player.body:getLinearVelocity() < 15 and player.body:getLinearVelocity() > -15 and isShooting() and player.state == "shootingUp" then
+        player.curAnim = 8
+      end
     end
 
     --[[ Play falling animation ]]
@@ -245,7 +273,9 @@ player.update = function(dt)
       if contacts[i]:isTouching() then
         local fixA, fixB = contacts[i]:getFixtures()
         if fixB:getCategory() == CATEGORY.ENEMY or fixA:getCategory() == CATEGORY.ENEMY then
-          kill(player)
+          if player.isRolling == false then
+            kill(player)
+          end
         end
 
         --[[ If the player is touching the ground and is falling, ground the player ]]

@@ -70,6 +70,14 @@ function pressCircle()
   end
 end
 
+function rightBumper()
+  if noController then
+    return false
+  else 
+    return joystick:isGamepadDown("rightshoulder")
+  end
+end
+
 function pressStart()
   if noController then
     return false
