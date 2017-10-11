@@ -19,7 +19,7 @@ local bullet = {
   dir = {x = 0, y = 0},
   -- basic player assets
   -- spriteSheet = "img/bullet2.png",
-  spriteSheet = "img/newBullet3.png",
+  spriteSheet = "img/newBullet4.png",
   -- spriteSheet = "img/newbullet2.png",
   spriteGrid = nil,
   animations = {},

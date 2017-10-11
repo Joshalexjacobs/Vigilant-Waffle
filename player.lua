@@ -14,7 +14,7 @@ local player = {
   dir = {x = 1, y = 0},
   --dirY = 0,
   -- basic player assets
-  spriteSheet = "img/playerRoll2.png", -- spriteSheet = "img/player2Up.png"
+  spriteSheet = "img/playerJump.png", -- spriteSheet = "img/player2Up.png"
   -- spriteSheet = "img/playerDying.png", -- spriteSheet = "img/player2Up.png"
   spriteGrid = nil,
   animations = {},
@@ -81,7 +81,7 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid(1, 1, 2, 1), 0.09), -- 6 idle shot
     anim8.newAnimation(player.spriteGrid(3, 7, "1-3", 8, 1, 9), 0.125, "pauseAtEnd"), -- 7 dying
     anim8.newAnimation(player.spriteGrid("1-2", 7), 0.09), -- 8 up shot
-    anim8.newAnimation(player.spriteGrid("1-3", 10, 1, 11), 0.09), -- 9 roll
+    anim8.newAnimation(player.spriteGrid("1-3", 10, 1, 11), 0.05), -- 9 roll
   }
 
   --[[ Set player's mass ]]
