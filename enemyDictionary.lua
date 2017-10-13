@@ -5,6 +5,8 @@ local ogre = require "enemies/ogre"
 local pipes = require "enemies/pipes"
 local bat = require "enemies/bat"
 
+local LS = require "enemies/laserShower"
+
 local enemyDictionary = {
   {name = "skull", enemy = skull},
   {name = "oldOne", enemy = oldOne},
@@ -12,6 +14,7 @@ local enemyDictionary = {
   {name = "ogre", enemy = ogre},
   {name = "bat", enemy = bat},
   {name = "pipes", enemy = pipes},
+  {name = "LS", enemy = LS},
 }
 
 function loadEnemyDictionary()
