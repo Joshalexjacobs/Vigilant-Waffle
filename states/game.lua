@@ -44,9 +44,9 @@ function game:enter()
   --let's create the ground
   objects.ground = {}
   objects.ground.body = love.physics.newBody(world, 160, 256)
-  objects.ground.shape = love.physics.newRectangleShape(496, 5)
+  objects.ground.shape = love.physics.newRectangleShape(496, 20)
   objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape); --attach shape to body
-  objects.ground.sprite = maid64.newImage("img/platform.png")
+  objects.ground.sprite = maid64.newImage("img/platform5.png")
   objects.ground.fixture:setCategory(4)
 
   objects.wallLeft = {}
@@ -125,10 +125,11 @@ function game:draw()
   love.graphics.polygon("fill", objects.wallLeft.body:getWorldPoints(objects.wallLeft.shape:getPoints()))
   love.graphics.polygon("fill", objects.wallRight.body:getWorldPoints(objects.wallRight.shape:getPoints()))
   love.graphics.setColor(90, 17, 17)
+  
   love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
   love.graphics.setColor(255, 255, 255)
 
-  --love.graphics.draw(objects.ground.sprite, 0, 58) -- crappy platform i made
+  love.graphics.draw(objects.ground.sprite, 0, 225) -- crappy platform i made 
 
   drawEnemy()
 
