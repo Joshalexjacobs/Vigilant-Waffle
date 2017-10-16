@@ -212,7 +212,7 @@ local function isPlayerOnPlatform(fixture, player)
 	if player.body:getY() + player.h / 2 < y + h / 2 then
 		--print("player: " .. player.body:getY() + player.h .. " vs platform y: " .. y)
 		return true
-	else 
+	else -- testing
 		return false
 	end
 end
