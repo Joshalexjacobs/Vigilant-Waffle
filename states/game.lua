@@ -122,18 +122,20 @@ function game:draw()
 
   --love.graphics.setColor(90, 85, 85) -- grey
   love.graphics.setColor(90, 17, 17)
-  love.graphics.polygon("fill", objects.wallLeft.body:getWorldPoints(objects.wallLeft.shape:getPoints()))
-  love.graphics.polygon("fill", objects.wallRight.body:getWorldPoints(objects.wallRight.shape:getPoints()))
+  -- love.graphics.polygon("fill", objects.wallLeft.body:getWorldPoints(objects.wallLeft.shape:getPoints()))
+  -- love.graphics.polygon("fill", objects.wallRight.body:getWorldPoints(objects.wallRight.shape:getPoints()))
   love.graphics.setColor(90, 17, 17)
   
-  love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
+  -- love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
   love.graphics.setColor(255, 255, 255)
 
-  love.graphics.draw(objects.ground.sprite, 0, 225) -- crappy platform i made 
+  
 
   drawEnemy()
 
   player.draw()
+
+  love.graphics.draw(objects.ground.sprite, 0, 230) -- crappy platform i made 
 
   drawBullet()
 
