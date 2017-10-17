@@ -87,8 +87,8 @@ bat.load = function(entity)
     anim8.newAnimation(entity.spriteGrid("1-3", 1, "1-2", 2, "2-1", 2, "3-1", 1), 0.05), -- 1 idle
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER)
-  entity.diameter.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER, CATEGORY.BULLET, CATEGORY.PLAYER)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER, CATEGORY.PLATFORM)
+  entity.diameter.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER, CATEGORY.BULLET, CATEGORY.PLAYER, CATEGORY.PLATFORM)
 
   --[[ Setup bat Timers ]]
   addTimer(0.0, "isHit", entity.timers)

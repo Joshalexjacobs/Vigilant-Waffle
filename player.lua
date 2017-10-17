@@ -319,10 +319,15 @@ player.update = function(dt)
             local entity = otherFixture:getUserData()
             otherFixture:getUserData().damage(nil, entity)
           end
+
         end
+
       end
+
     end
+
   end
+
 end
 
 player.draw = function()
@@ -333,7 +338,7 @@ player.draw = function()
   if DEBUG then
    love.graphics.setColor(255, 0, 0)
    love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
-	 --love.graphics.points(player.body:getX(), player.body:getY() + player.h / 2 )
+	 -- love.graphics.points(player.body:getX(), player.body:getY() + player.h / 2 )
 	 
    love.graphics.setColor(255, 255, 255)
   end

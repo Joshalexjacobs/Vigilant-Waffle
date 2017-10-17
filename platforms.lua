@@ -62,15 +62,15 @@ end
 
 function updatePlatforms(dt, player)
 	for i, newPlatform in ipairs(platforms) do
-		if player.body:getY() + player.h / 2 < newPlatform.y - newPlatform.h / 2 then
+		newPlatform.body:setLinearVelocity(0, platformSpeed)
+
+		if player.body:getY() + player.h / 2 < newPlatform.body:getY() + newPlatform.h / 2 then
 			newPlatform.isActive = true
 			newPlatform.fixture:setMask(CATEGORY.BULLET, CATEGORY.GROUND, CATEGORY.WALL)
 		else
 			newPlatform.isActive = false
 			newPlatform.fixture:setMask(CATEGORY.BULLET, CATEGORY.GROUND, CATEGORY.WALL, CATEGORY.PLAYER)
 		end
-		
-		newPlatform.body:setLinearVelocity(0, platformSpeed)
 		
 		--[[ may need this at a later point ?
 		local contacts = newPlatform.body:getContactList()
@@ -109,15 +109,19 @@ function drawPlatforms()
 		else
 			love.graphics.setColor(200, 0, 0, 255)
 		end
-		
+
 		love.graphics.polygon("fill", newPlatform.body:getWorldPoints(newPlatform.shape:getPoints()))
+		
+		-- if DEBUG then
+		-- 	love.graphics.setColor(0, 0, 200, 255)
+		-- 	love.graphics.points(newPlatform.body:getX(), newPlatform.body:getY() + newPlatform.h / 2)
+		-- end
 	end
 	
 	love.graphics.setColor(255, 255, 255, 255)
 end
 
 function destroyPlatform(newPlatform)
-	print("GONE LOL")
 	newPlatform.body:destroy()
 end
 
