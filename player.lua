@@ -332,14 +332,10 @@ player.draw = function()
 
   if DEBUG then
    love.graphics.setColor(255, 0, 0)
-   --love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
-	 
-	 
-	 love.graphics.points(player.body:getX(), player.body:getY() + player.h / 2 )
+   love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
+	 --love.graphics.points(player.body:getX(), player.body:getY() + player.h / 2 )
 	 
    love.graphics.setColor(255, 255, 255)
-	 
-	 
   end
 
   --love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))

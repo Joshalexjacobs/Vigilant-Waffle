@@ -95,6 +95,8 @@ function game:update(dt)
     updateBullet(newDT)
     updateEnemy(newDT)
 
+		updatePlatforms(dt, player)
+		
     -- updateTime(newDT)
     -- updateTM()
 
@@ -104,6 +106,8 @@ function game:update(dt)
     player.update(dt)
     updateBullet(dt)
     updateEnemy(dt)
+		
+		updatePlatforms(dt, player)
 
     updateTime(dt)
     updateTM()
