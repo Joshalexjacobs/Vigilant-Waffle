@@ -60,7 +60,7 @@ pipes.load = function(entity)
     anim8.newAnimation(entity.spriteGrid("2-1", 2, 3, 1, 1, 1), 0.5, "pauseAtEnd"), -- 3 closing mouth
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.DIAMETER, CATEGORY.PLATFORM)
 
   --[[ Setup pipes Timers ]]
   addTimer(0.0, "isHit", entity.timers)

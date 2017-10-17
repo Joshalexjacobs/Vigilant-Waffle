@@ -41,15 +41,11 @@ local bulletList = {}
 
 function loadBullets()
   -- animations/sprites
-  -- bullet.spriteGrid = anim8.newGrid(16, 16, 32, 64, 0, 0, 0)
   bullet.spriteGrid = anim8.newGrid(18, 16, 60, 64, 0, 0, 0)
   bullet.spriteSheet = maid64.newImage(bullet.spriteSheet)
   bullet.animations = {
-    -- anim8.newAnimation(bullet.spriteGrid("1-2", 1), 0.03, "pauseAtEnd"),  -- 1 idle
     anim8.newAnimation(bullet.spriteGrid("1-3", 1, "1-2", 2), 0.03, "pauseAtEnd"),  -- 1 idle
-
-    -- anim8.newAnimation(bullet.spriteGrid("1-2", 2, 2, 4), 0.035, "pauseAtEnd")   -- 2 dead
-      anim8.newAnimation(bullet.spriteGrid(3, 2, "1-3", 3, "1-2", 4), 0.05, "pauseAtEnd"),   -- 2 dead
+		anim8.newAnimation(bullet.spriteGrid(3, 2, "1-3", 3, "1-2", 4), 0.05, "pauseAtEnd"),   -- 2 dead
   }
 end
 

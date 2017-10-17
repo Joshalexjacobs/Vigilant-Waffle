@@ -121,7 +121,7 @@ end
 local function kill(player)
   player.body:applyForce(0, player.jumpStrength * 10)
   player.isDead = true
-  player.fixture:setMask(CATEGORY.ENEMY, CATEGORY.GROUND, CATEGORY.HEAD)
+  player.fixture:setMask(CATEGORY.ENEMY, CATEGORY.GROUND, CATEGORY.HEAD, CATEGORY.PLATFORM)
   player.curAnim = 7
 end
 
@@ -200,6 +200,23 @@ local function move(player)
   end
 end
 
+local function isPlayerOnPlatform(fixture, player)
+	if fixture == nil or fixture:getCategory() ~= CATEGORY.PLATFORM then 
+		return false 
+	end
+	
+	local x, y = fixture:getBody():getX(), fixture:getBody():getY()
+	local h = fixture:getUserData().h
+	
+	--[[ this should include player X eventually (is player on the side of the platform?) ]]
+	if player.body:getY() + player.h / 2 < y + h / 2 then
+		--print("player: " .. player.body:getY() + player.h .. " vs platform y: " .. y)
+		return true
+	else -- testing 222
+		return false
+	end
+end
+
 player.update = function(dt)
   --[[ Update player anim ]]
   player.animations[player.curAnim]:update(dt)
@@ -212,7 +229,7 @@ player.update = function(dt)
     local dx, dy = player.body:getLinearVelocity()
 
     --[[ Player Jump ]]
-    if isJumping() and player.isFalling == false and player.isRolling == false then -- and player is touching the ground
+    if isJumping() and player.isFalling == false and player.isRolling == false then -- [[ there should be another timer to force a gap inbetween jumps 0.2 seconds? maybe less? ]]
       player.state = "jumping"
       jump(player)
     end
@@ -272,7 +289,18 @@ player.update = function(dt)
     for i = 1, #contacts do
       if contacts[i]:isTouching() then
         local fixA, fixB = contacts[i]:getFixtures()
-        if fixB:getCategory() == CATEGORY.ENEMY or fixA:getCategory() == CATEGORY.ENEMY then
+				local playerFixture = nil
+				local otherFixture = nil
+				
+				if fixA:getCategory() == CATEGORY.PLAYER then
+					playerFixture = fixA
+					otherFixture = fixB
+				else
+					playerFixture = fixB
+					otherFixture = fixA
+				end
+				
+        if otherFixture:getCategory() == CATEGORY.ENEMY then
           if player.isRolling == false then
             kill(player)
           end
@@ -280,21 +308,26 @@ player.update = function(dt)
 
         --[[ If the player is touching the ground and is falling, ground the player ]]
         if player.isFalling then
-          if fixA:getCategory() == CATEGORY.GROUND or fixB:getCategory() == CATEGORY.GROUND then
+          if otherFixture:getCategory() == CATEGORY.GROUND or isPlayerOnPlatform(otherFixture, player) then
             player.isFalling = false
             player.curAnim = 2
-          elseif fixB:getCategory() == CATEGORY.HEAD and updateTimer(dt, "jump", player.timers) then
+          elseif otherFixture:getCategory() == CATEGORY.HEAD and updateTimer(dt, "jump", player.timers) then
             player.jumpStrength = -300
             jump(player)
             player.jumpStrength = player.actualJumpStrength
-
-            local entity = fixB:getUserData()
-            fixB:getUserData().damage(nil, entity)
+						
+            local entity = otherFixture:getUserData()
+            otherFixture:getUserData().damage(nil, entity)
           end
+
         end
+
       end
+
     end
+
   end
+
 end
 
 player.draw = function()
@@ -305,6 +338,8 @@ player.draw = function()
   if DEBUG then
    love.graphics.setColor(255, 0, 0)
    love.graphics.polygon("line", player.body:getWorldPoints(player.shape:getPoints()))
+	 -- love.graphics.points(player.body:getX(), player.body:getY() + player.h / 2 )
+	 
    love.graphics.setColor(255, 255, 255)
   end
 

@@ -9,11 +9,13 @@ CATEGORY = {
   GROUND = 4,
   ENEMY = 5,
   HEAD = 6,
-  DIAMETER = 7
+  DIAMETER = 7,
+	PLATFORM = 8
 }
 
 player = require "player"
 local background = require "scrollingBG"
+require "platforms"
 require "bullets"
 require "enemies"
 require "enemyDictionary"
@@ -31,6 +33,7 @@ function game:keypressed(key, code)
   if key == 'r' and player.isDead then
     player.reset()
     resetEnemies()
+		resetPlatforms()
     resetTM()
   end
 end
@@ -45,7 +48,7 @@ function game:enter()
   objects.ground = {}
   objects.ground.body = love.physics.newBody(world, 160, 256)
   objects.ground.shape = love.physics.newRectangleShape(496, 20)
-  objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape); --attach shape to body
+  objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape) --attach shape to body
   objects.ground.sprite = maid64.newImage("img/platform5.png")
   objects.ground.fixture:setCategory(4)
 
@@ -65,21 +68,12 @@ function game:enter()
   objects.wallRight.fixture = love.physics.newFixture(objects.wallRight.body, objects.wallRight.shape);
   objects.wallRight.fixture:setCategory(3)
 
+	
+	--[[ Load calls ]] 
   player.load()
   loadBullets()
   background.load()
-
-  -- testing
-  -- addEnemy("skull", 7, 0, 1)
-  -- addEnemy("oldOne", 25, 30, 1)
-  -- addEnemy("oldOne", 25, 75, 1)
-  -- addEnemy("newOne", 25, 75, 1)
-  -- addEnemy("skull", 90, 0, -1)
-  -- addEnemy("ogre", 25, 75, 1)
-  -- addEnemy("bat", 25, 75, 1)
-  -- addEnemy("bat", 50, 10, 1)
-  -- addEnemy("bat", 80, 25, 1)
-  -- addEnemy("pipes", 203, 75, -1) -- 175
+	loadPlatforms(background.speed)
 end
 
 function game:update(dt)
@@ -90,6 +84,8 @@ function game:update(dt)
     updateBullet(newDT)
     updateEnemy(newDT)
 
+		updatePlatforms(newDT, player)
+		
     -- updateTime(newDT)
     -- updateTM()
 
@@ -99,6 +95,8 @@ function game:update(dt)
     player.update(dt)
     updateBullet(dt)
     updateEnemy(dt)
+		
+		updatePlatforms(dt, player)
 
     updateTime(dt)
     updateTM()
@@ -117,14 +115,12 @@ function game:draw()
   maid64.start()
   cam:attach()
 
-
   background.draw()
 
-  --love.graphics.setColor(90, 85, 85) -- grey
-  love.graphics.setColor(90, 17, 17)
+	drawPlatforms()
+	
   -- love.graphics.polygon("fill", objects.wallLeft.body:getWorldPoints(objects.wallLeft.shape:getPoints()))
   -- love.graphics.polygon("fill", objects.wallRight.body:getWorldPoints(objects.wallRight.shape:getPoints()))
-  love.graphics.setColor(90, 17, 17)
   
   -- love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
   love.graphics.setColor(255, 255, 255)

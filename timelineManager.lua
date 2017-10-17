@@ -45,7 +45,11 @@ end
 
 function updateTM()
   while #timeline > 1 and tonumber(timeline[1].time) <= time do
-    addEnemy(timeline[1].name, timeline[1].x, timeline[1].y, timeline[1].dir)
+		--[[ should the platforms live in a seperate file? or at least a seperate list? ]]
+		if addTimelinePlatform(timeline[1].name, timeline[1].x, timeline[1].y) == false then
+			addEnemy(timeline[1].name, timeline[1].x, timeline[1].y, timeline[1].dir)
+		end
+		
     table.remove(timeline, 1)
   end
 end
@@ -55,7 +59,7 @@ function getTime()
 end
 
 function updateTime(dt)
-  time = math.floor((time + dt )* (10 ^ 2) + 0.5) / (10 ^ 2)
+  time = math.floor((time + dt ) * (10 ^ 2) + 0.5) / (10 ^ 2)
 
   return time
 end
