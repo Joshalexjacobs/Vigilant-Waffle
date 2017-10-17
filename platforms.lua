@@ -15,11 +15,29 @@ local platform = {
 
 local platforms = {}
 
-function loadPlatforms()
-	addPlatform(100, 210, 30, 5) -- delete me 
+local platformTypes = {
+	{name = "shortPlatform", w = 30, h = 5},
+	{name = "medPlatform", w = 60, h = 5},
+	{name = "longPlatform", w = 120, h = 5}
+}
+
+local platformSpeed = 0
+
+function loadPlatforms(speed)
+	platformSpeed = speed
 end
 
---[[ add platform should eventually be based on timeline ]]
+function addTimelinePlatform(name, x, y)
+	for i = 1, #platformTypes do
+		if name == platformTypes[i].name then
+			addPlatform(x, y, platformTypes[i].w, platformTypes[i].h)
+			return true
+		end
+	end
+	
+	return false
+end
+
 function addPlatform(x, y, w, h)
 	local newPlatform = copy(platform, newPlatform)
 	
@@ -28,32 +46,60 @@ function addPlatform(x, y, w, h)
 	newPlatform.w = w
 	newPlatform.h = h
 	
-	newPlatform.body = love.physics.newBody(world, newPlatform.x, newPlatform.y)
+	newPlatform.body = love.physics.newBody(world, newPlatform.x, newPlatform.y, "dynamic")
 	newPlatform.shape = love.physics.newRectangleShape(newPlatform.w, newPlatform.h)
 	newPlatform.fixture = love.physics.newFixture(newPlatform.body, newPlatform.shape)
 	
+	newPlatform.body:setFixedRotation(true)
+	newPlatform.body:setGravityScale(0)
+	
 	newPlatform.fixture:setCategory(CATEGORY.PLATFORM)
-	newPlatform.fixture:setMask(CATEGORY.BULLET, CATEGORY.PLAYER)
+	newPlatform.fixture:setMask(CATEGORY.BULLET, CATEGORY.GROUND, CATEGORY.WALL)
 	newPlatform.fixture:setUserData(newPlatform)
 	
 	table.insert(platforms, newPlatform)
 end
 
 function updatePlatforms(dt, player)
-	for _, newPlatform in ipairs(platforms) do
+	for i, newPlatform in ipairs(platforms) do
 		if player.body:getY() + player.h / 2 < newPlatform.y - newPlatform.h / 2 then
 			newPlatform.isActive = true
-			newPlatform.fixture:setMask(CATEGORY.BULLET)
+			newPlatform.fixture:setMask(CATEGORY.BULLET, CATEGORY.GROUND, CATEGORY.WALL)
 		else
 			newPlatform.isActive = false
-			newPlatform.fixture:setMask(CATEGORY.BULLET, CATEGORY.PLAYER)
+			newPlatform.fixture:setMask(CATEGORY.BULLET, CATEGORY.GROUND, CATEGORY.WALL, CATEGORY.PLAYER)
 		end
+		
+		newPlatform.body:setLinearVelocity(0, platformSpeed)
+		
+		--[[ may need this at a later point ?
+		local contacts = newPlatform.body:getContactList()
+		
+		for i = 1, #contacts do
+			if contacts[i]:isTouching() then
+				local fixA, fixB = contacts[i]:getFixtures()
+				local platformFixture = nil
+				local otherFixture = nil
+				
+				if fixA:getCategory() == CATEGORY.PLATFORM then
+					platformFixture = fixA
+					otherFixture = fixB
+				else
+					platformFixture = fixB
+					otherFixture = fixA
+				end			
+				
+			end
+			
+		end ]]
+		
+		if newPlatform.body:getY() < -50 then
+			destroyPlatform(newPlatform)
+			table.remove(platforms, i)
+		end
+		
 	end
 	
-	-- if player.y < platform.y + platform.h / 2 then
-	-- platform mask does not include player
-	-- else 
-	-- platform mask includes the player
 end
 
 function drawPlatforms()
@@ -68,4 +114,18 @@ function drawPlatforms()
 	end
 	
 	love.graphics.setColor(255, 255, 255, 255)
+end
+
+function destroyPlatform(newPlatform)
+	print("GONE LOL")
+	newPlatform.body:destroy()
+end
+
+function resetPlatforms()
+	for _, newPlatform in ipairs(platforms) do
+		destroyPlatform(newPlatform)
+	end
+	
+	platforms = {}
+	platform.isActive = false
 end

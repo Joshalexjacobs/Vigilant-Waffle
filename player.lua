@@ -121,7 +121,7 @@ end
 local function kill(player)
   player.body:applyForce(0, player.jumpStrength * 10)
   player.isDead = true
-  player.fixture:setMask(CATEGORY.ENEMY, CATEGORY.GROUND, CATEGORY.HEAD)
+  player.fixture:setMask(CATEGORY.ENEMY, CATEGORY.GROUND, CATEGORY.HEAD, CATEGORY.PLATFORM)
   player.curAnim = 7
 end
 
@@ -229,7 +229,7 @@ player.update = function(dt)
     local dx, dy = player.body:getLinearVelocity()
 
     --[[ Player Jump ]]
-    if isJumping() and player.isFalling == false and player.isRolling == false then -- and player is touching the ground
+    if isJumping() and player.isFalling == false and player.isRolling == false then -- [[ there should be another timer to force a gap inbetween jumps 0.2 seconds? maybe less? ]]
       player.state = "jumping"
       jump(player)
     end

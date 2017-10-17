@@ -13,7 +13,7 @@ local background = {
   update = nil,
   draw = nil,
   -- other
-  speed = -100 -- -35
+  speed = -15 -- -35
 }
 
 background.load = function ()

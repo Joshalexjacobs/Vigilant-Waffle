@@ -33,6 +33,7 @@ function game:keypressed(key, code)
   if key == 'r' and player.isDead then
     player.reset()
     resetEnemies()
+		resetPlatforms()
     resetTM()
   end
 end
@@ -72,19 +73,7 @@ function game:enter()
   player.load()
   loadBullets()
   background.load()
-	loadPlatforms()
-
-  -- testing
-  -- addEnemy("skull", 7, 0, 1)
-  -- addEnemy("oldOne", 25, 30, 1)
-  -- addEnemy("oldOne", 25, 75, 1)
-  -- addEnemy("newOne", 25, 75, 1)
-  -- addEnemy("skull", 90, 0, -1)
-  -- addEnemy("ogre", 25, 75, 1)
-  -- addEnemy("bat", 25, 75, 1)
-  -- addEnemy("bat", 50, 10, 1)
-  -- addEnemy("bat", 80, 25, 1)
-  -- addEnemy("pipes", 203, 75, -1) -- 175
+	loadPlatforms(background.speed)
 end
 
 function game:update(dt)
@@ -95,7 +84,7 @@ function game:update(dt)
     updateBullet(newDT)
     updateEnemy(newDT)
 
-		updatePlatforms(dt, player)
+		updatePlatforms(newDT, player)
 		
     -- updateTime(newDT)
     -- updateTM()
