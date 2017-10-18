@@ -1,10 +1,15 @@
 -- platforms.lua
 
 local platform = {
+	-- platform dimensions
 	x = 100,
 	y = 200,
 	w = 30,
 	h = 5,
+	offX = 5,
+	offY = 5,
+	-- platform assets
+	sprite = nil,
 	-- platform physics objects
 	body = nil,
 	shape = nil, 
@@ -16,7 +21,7 @@ local platform = {
 local platforms = {}
 
 local platformTypes = {
-	{name = "shortPlatform", w = 30, h = 5},
+	{name = "shortPlatform", w = 35, h = 5, sprite = "img/platforms/shortPlatform.png", offX = -18, offY = -5},
 	{name = "medPlatform", w = 60, h = 5},
 	{name = "longPlatform", w = 120, h = 5}
 }
@@ -24,13 +29,17 @@ local platformTypes = {
 local platformSpeed = 0
 
 function loadPlatforms(speed)
+	-- for i = 1, #platformTypes do
+	
+	-- end
 	platformSpeed = speed
 end
 
 function addTimelinePlatform(name, x, y)
 	for i = 1, #platformTypes do
 		if name == platformTypes[i].name then
-			addPlatform(x, y, platformTypes[i].w, platformTypes[i].h)
+			--addPlatform(x, y, platformTypes[i].w, platformTypes[i].h, platformTypes[i].sprite)
+			addPlatform(x, y, platformTypes[i])
 			return true
 		end
 	end
@@ -38,13 +47,18 @@ function addTimelinePlatform(name, x, y)
 	return false
 end
 
-function addPlatform(x, y, w, h)
+--function addPlatform(x, y, w, h, sprite)
+function addPlatform(x, y, platformType)
 	local newPlatform = copy(platform, newPlatform)
 	
 	newPlatform.x = x
 	newPlatform.y = y
-	newPlatform.w = w
-	newPlatform.h = h
+	newPlatform.w = platformType.w
+	newPlatform.h = platformType.h
+	newPlatform.sprite = maid64.newImage(platformType.sprite)
+	newPlatform.offX = platformType.offX
+	newPlatform.offY = platformType.offY
+	
 	
 	newPlatform.body = love.physics.newBody(world, newPlatform.x, newPlatform.y, "dynamic")
 	newPlatform.shape = love.physics.newRectangleShape(newPlatform.w, newPlatform.h)
@@ -104,18 +118,20 @@ end
 
 function drawPlatforms()
 	for _, newPlatform in ipairs(platforms) do
-		if newPlatform.isActive then
-			love.graphics.setColor(0, 200, 0, 255)
-		else
-			love.graphics.setColor(200, 0, 0, 255)
-		end
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(newPlatform.sprite, newPlatform.body:getX() + newPlatform.offX, newPlatform.body:getY() + newPlatform.offY)
 
-		love.graphics.polygon("fill", newPlatform.body:getWorldPoints(newPlatform.shape:getPoints()))
-		
-		-- if DEBUG then
+		if DEBUG then
+			if newPlatform.isActive then
+				love.graphics.setColor(0, 200, 0, 255)
+			else
+				love.graphics.setColor(200, 0, 0, 255)
+			end
+
+			love.graphics.polygon("fill", newPlatform.body:getWorldPoints(newPlatform.shape:getPoints()))			
 		-- 	love.graphics.setColor(0, 0, 200, 255)
 		-- 	love.graphics.points(newPlatform.body:getX(), newPlatform.body:getY() + newPlatform.h / 2)
-		-- end
+		end
 	end
 	
 	love.graphics.setColor(255, 255, 255, 255)

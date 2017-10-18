@@ -117,7 +117,7 @@ function game:draw()
 
   background.draw()
 
-	drawPlatforms()
+	
 	
   -- love.graphics.polygon("fill", objects.wallLeft.body:getWorldPoints(objects.wallLeft.shape:getPoints()))
   -- love.graphics.polygon("fill", objects.wallRight.body:getWorldPoints(objects.wallRight.shape:getPoints()))
@@ -126,10 +126,12 @@ function game:draw()
   love.graphics.setColor(255, 255, 255)
 
   
-
+  drawPlatforms()
+  
   drawEnemy()
 
   player.draw()
+
 
   love.graphics.draw(objects.ground.sprite, 0, 230) -- crappy platform i made 
 

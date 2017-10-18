@@ -1,6 +1,6 @@
 -- pipes pipes
 --------------------------------
-longPlatform 00.01 80 260 1
+shortPlatform 00.01 50 260 1
 
 pipes 01.00 440 75 -1
 pipes 01.00 -32 75 1
