@@ -21,9 +21,9 @@ local platform = {
 local platforms = {}
 
 local platformTypes = {
-	{name = "shortPlatform", w = 35, h = 5, sprite = "img/platforms/shortPlatform.png", offX = -18, offY = -5},
-	{name = "medPlatform", w = 60, h = 5},
-	{name = "longPlatform", w = 120, h = 5}
+	{name = "shortPlatform", w = 32, h = 10, sprite = "img/platforms/shortPlatform.png", offX = -15, offY = -5},
+	{name = "medPlatform", w = 64, h = 5},
+	{name = "longPlatform", w = 128, h = 5}
 }
 
 local platformSpeed = 0

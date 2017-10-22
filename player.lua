@@ -14,8 +14,8 @@ local player = {
   dir = {x = 1, y = 0},
   --dirY = 0,
   -- basic player assets
-  spriteSheet = "img/playerJump.png", -- spriteSheet = "img/player2Up.png"
-  -- spriteSheet = "img/playerDying.png", -- spriteSheet = "img/player2Up.png"
+  spriteSheet = "img/playerUpdate2.png", 
+  --spriteSheet = "img/playerJump.png", -- spriteSheet
   spriteGrid = nil,
   animations = {},
   curAnim = 1,
@@ -76,7 +76,7 @@ player.load = function()
     anim8.newAnimation(player.spriteGrid(1, 1), 0.5), -- 1 idle
     anim8.newAnimation(player.spriteGrid("1-3", "2-3"), 0.15), -- 2 walk
     anim8.newAnimation(player.spriteGrid(1, 4), 0.15), -- 3 falling
-    anim8.newAnimation(player.spriteGrid("2-3", 4), {0.125, 0.10}, "pauseAtEnd"), -- 4 jumping
+    anim8.newAnimation(player.spriteGrid("2-3", 4, 3, 11), {0.125, 0.10, 0.10}, "pauseAtEnd"), -- 4 jumping
     anim8.newAnimation(player.spriteGrid("1-3", "5-6"), 0.15), -- 5 angleShot
     anim8.newAnimation(player.spriteGrid(1, 1, 2, 1), 0.09), -- 6 idle shot
     anim8.newAnimation(player.spriteGrid(3, 7, "1-3", 8, 1, 9), 0.125, "pauseAtEnd"), -- 7 dying
