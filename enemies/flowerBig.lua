@@ -31,7 +31,7 @@ local flowerBig = {
     timers = {},
     isDead = false,
     category = CATEGORY.ENEMY,
-    layer = 1
+    layer = 2
     -- head = {
     --   name = "head",
     --   w = 8,
@@ -77,7 +77,7 @@ flowerBig.load = function(entity)
   --[[ Setup flowerBig Timers ]]
   addTimer(0.0, "isHit", entity.timers)
   addTimer(0.0, "flip", entity.timers)
-  addTimer(0.0, "spawn", entity.timers)
+  addTimer(1.0, "spawn", entity.timers)
 end
 
 --[[ flip ]]
@@ -127,13 +127,14 @@ flowerBig.behaviour = function(dt, entity)
     entity.body:setLinearVelocity(0, entity.speed)
 
     if entity.y < 225 then
-    	if entity.curAnim == 1 and getTimerStatus("spawn", entity.timers) == false then
+    	-- if entity.curAnim == 1 and getTimerStatus("spawn", entity.timers) == false then
 				
-    	elseif updateTimer(dt, "spawn", entity.timers) then
+    	if updateTimer(dt, "spawn", entity.timers) then
+        addEnemy("roly", entity.x+6, entity.y+30, 1)
     		entity.curAnim = 2
 	      -- entity.animations[2]:gotoFrame(1)
       	-- entity.animations[2]:resume()
-    		resetTimer(2.0, "spawn", entity.timers)
+    		resetTimer(5.0, "spawn", entity.timers)
     	end
 
 

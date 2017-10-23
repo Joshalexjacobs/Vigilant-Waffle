@@ -74,7 +74,7 @@ roly.load = function(entity)
     anim8.newAnimation(entity.spriteGrid("1-3", 1, 1, 2), 0.05), -- 1 idle
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.PLATFORM)
 
   --[[ Setup roly Timers ]]
   addTimer(0.0, "isHit", entity.timers)
@@ -107,6 +107,7 @@ end
 roly.behaviour = function(dt, entity)
   --[[ Update roly anim ]]
   entity.animations[entity.curAnim]:update(dt)
+  updateTimer(dt, "flip", entity.timers)
 
   if entity.body:isDestroyed() == false then
     local contacts = entity.body:getContactList()
@@ -118,7 +119,7 @@ roly.behaviour = function(dt, entity)
           entity.damage(a, entity)
         elseif b:getCategory() == CATEGORY.BULLET and b:isDestroyed() == false then
           entity.damage(b, entity)
-        elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and updateTimer(dt, "flip", entity.timers) then
+        elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and getTimerStatus("flip", entity.timers) then
           flip(entity)
           resetTimer(0.20, "flip", entity.timers)
         elseif (a:getCategory() == CATEGORY.GROUND or b:getCategory() == CATEGORY.GROUND) then

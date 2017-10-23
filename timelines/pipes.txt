@@ -2,10 +2,9 @@
 --------------------------------
 shortPlatform 00.01 50 260 1
 
-roly 01.00 50 50 1
-
 --flowerBig 01.00 400 300 -1
-flowerBig 01.00 392 200 -1
+
+--  flowerBig 01.00 392 200 -1
 
 --flowerBig 01.00 8 300 1
 flowerBig 01.00 16 200 1
