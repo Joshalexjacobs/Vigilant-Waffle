@@ -1,27 +1,27 @@
--- templateEnemy.lua
+-- flowerBig.lua
 
-local templateEnemy = {
-    name = "templateEnemy",
-    hp = 1,
+local flowerBig = {
+    name = "flowerBig",
+    hp = 30,
     x = -50,
     y = -50,
-    w = 0,
-    h = 0,
-    offX = 0,
+    w = 16,
+    h = 64,
+    offX = -4,
     offY = 0,
     speed = 0,
     dir = 1,
-    -- templateEnemy assets
-    spriteSheet = "img/enemies/templateEnemy.png",
+    -- flowerBig assets
+    spriteSheet = "img/enemies/flowerBig.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
-    -- templateEnemy physics objects
+    -- flowerBig physics objects
     body = nil,
     shape = nil,
     fixture = nil,
     joint = nil,
-    -- templateEnemy functions
+    -- flowerBig functions
     load = nil,
     behaviour = nil,
     draw = nil,
@@ -31,7 +31,7 @@ local templateEnemy = {
     timers = {},
     isDead = false,
     category = CATEGORY.ENEMY,
-    layer = 1,
+    layer = 1
     -- head = {
     --   name = "head",
     --   w = 8,
@@ -43,7 +43,7 @@ local templateEnemy = {
     -- }
 }
 
-templateEnemy.load = function(entity)
+flowerBig.load = function(entity)
   --[[ Physics setup ]]
 
   -- enemy body
@@ -58,25 +58,26 @@ templateEnemy.load = function(entity)
   entity.fixture:setUserData(entity)
 
   entity.body:setFixedRotation(true)
-  -- entity.body:setMass(1000) -- questionable whether i need this or not
-
-  -- entity.body:setGravityScale(0)
+  entity.body:setMass(1000)
+  entity.body:setGravityScale(0)
 
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
 
-  --[[ Load templateEnemy images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 16, 48, 96, 0, 0, 0)
+  --[[ Load flowerBig images/prep animations ]]
+  entity.spriteGrid = anim8.newGrid(24, 64, 72, 64, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid(1, 1), 0.5), -- 1 idle
+    anim8.newAnimation(entity.spriteGrid("2-3", 1), {0.5, 0.1}), -- 2 spawn
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.GROUND)
 
-  --[[ Setup templateEnemy Timers ]]
+  --[[ Setup flowerBig Timers ]]
   addTimer(0.0, "isHit", entity.timers)
   addTimer(0.0, "flip", entity.timers)
+  addTimer(0.0, "spawn", entity.timers)
 end
 
 --[[ flip ]]
@@ -87,7 +88,7 @@ local function flip(entity)
   entity.dir = -entity.dir -- flip their direction as well
 end
 
-templateEnemy.damage = function(a, entity)
+flowerBig.damage = function(a, entity)
   entity.isHit = true
   resetTimer(0.05, "isHit", entity.timers)
   entity.hp = entity.hp - 1
@@ -97,12 +98,12 @@ templateEnemy.damage = function(a, entity)
   end
 end
 
-templateEnemy.kill = function(entity)
+flowerBig.kill = function(entity)
   entity.body:destroy()
 end
 
-templateEnemy.behaviour = function(dt, entity)
-  --[[ Update templateEnemy anim ]]
+flowerBig.behaviour = function(dt, entity)
+  --[[ Update flowerBig anim ]]
   entity.animations[entity.curAnim]:update(dt)
 
   if entity.body:isDestroyed() == false then
@@ -121,13 +122,29 @@ templateEnemy.behaviour = function(dt, entity)
 
     entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
     local dx, dy = entity.body:getLinearVelocity()
+
+    entity.speed = getBackgroundSpeed()
+    entity.body:setLinearVelocity(0, entity.speed)
+
+    if entity.y < 225 then
+    	if entity.curAnim == 1 and getTimerStatus("spawn", entity.timers) == false then
+				
+    	elseif updateTimer(dt, "spawn", entity.timers) then
+    		entity.curAnim = 2
+	      -- entity.animations[2]:gotoFrame(1)
+      	-- entity.animations[2]:resume()
+    		resetTimer(2.0, "spawn", entity.timers)
+    	end
+
+
+    end
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
     entity.isHit = false
   end
 
-  --[[ Once templateEnemy dies ]]
+  --[[ Once flowerBig dies ]]
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
@@ -141,7 +158,7 @@ templateEnemy.behaviour = function(dt, entity)
 
 end
 
-templateEnemy.draw = function(entity)
+flowerBig.draw = function(entity)
   --[[ Draw ]]
   if entity.isHit then
     love.graphics.setColor(128, 17, 17)
@@ -160,4 +177,4 @@ templateEnemy.draw = function(entity)
   love.graphics.setColor(255, 255, 255)
 end
 
-return templateEnemy
+return flowerBig

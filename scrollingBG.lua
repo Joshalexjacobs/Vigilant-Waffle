@@ -1,7 +1,7 @@
 --scrollingBG.lua
 
 local background = {
-  sprite = "img/bg3.png",
+  sprite = "img/bg5.png",
   x1 = 0,
   y1 = 0,
   x2 = 0,
@@ -15,6 +15,10 @@ local background = {
   -- other
   speed = -10 -- -15
 }
+
+function getBackgroundSpeed()
+  return background.speed
+end
 
 background.load = function ()
   background.sprite = maid64.newImage(background.sprite)

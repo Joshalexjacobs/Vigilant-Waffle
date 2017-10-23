@@ -118,11 +118,11 @@ function game:draw()
   background.draw()
 
 	
-	
-  -- love.graphics.polygon("fill", objects.wallLeft.body:getWorldPoints(objects.wallLeft.shape:getPoints()))
-  -- love.graphics.polygon("fill", objects.wallRight.body:getWorldPoints(objects.wallRight.shape:getPoints()))
-  
-  -- love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
+	if DEBUG then
+    love.graphics.polygon("fill", objects.wallLeft.body:getWorldPoints(objects.wallLeft.shape:getPoints()))
+    love.graphics.polygon("fill", objects.wallRight.body:getWorldPoints(objects.wallRight.shape:getPoints()))
+  end
+
   love.graphics.setColor(255, 255, 255)
 
   
@@ -134,6 +134,10 @@ function game:draw()
 
 
   love.graphics.draw(objects.ground.sprite, 0, 230) -- crappy platform i made 
+
+  if DEBUG then
+    love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints()))
+  end
 
   drawBullet()
 
