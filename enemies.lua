@@ -93,3 +93,7 @@ function drawEnemy()
     newEnemy.draw(newEnemy)
   end
 end
+
+function getEnemyCount()
+  return #enemiesOne + #enemiesTwo
+end

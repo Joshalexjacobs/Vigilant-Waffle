@@ -8,6 +8,8 @@ local timelineName = "timelines/pipes.txt"
 
 local time = 0
 
+local allSpawned = false
+
 function loadTimelineManager()
   -- load timeline and store in timeline
   for line in io.lines(timelineName) do
@@ -37,8 +39,12 @@ function loadTimelineManager()
   return true
 end
 
-function resetTM()
+local function resetTime()
   time = 0
+end
+
+function resetTM()
+  resetTime()
   timeline = {}
   loadTimelineManager()
 end
@@ -51,6 +57,15 @@ function updateTM()
 		end
 		
     table.remove(timeline, 1)
+    if #timeline <= 1 then
+      allSpawned = true
+    end
+  end
+
+  if allSpawned and getEnemyCount() <= 0 then
+    resetTM()
+    allSpawned = false
+    -- grab a new timeline to choose from
   end
 end
 
