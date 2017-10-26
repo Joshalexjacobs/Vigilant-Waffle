@@ -14,7 +14,7 @@ local player = {
   dir = {x = 1, y = 0},
   --dirY = 0,
   -- basic player assets
-  spriteSheet = "img/playerUpdate2.png", 
+  spriteSheet = "img/playerUpdate3.png", -- playerUpdate3.png
   --spriteSheet = "img/playerJump.png", -- spriteSheet
   spriteGrid = nil,
   animations = {},
@@ -73,7 +73,7 @@ player.load = function()
   player.spriteSheet = maid64.newImage(player.spriteSheet)
   player.animations = {
                                     -- col, row
-    anim8.newAnimation(player.spriteGrid(1, 1), 0.5), -- 1 idle
+    anim8.newAnimation(player.spriteGrid(1, 1, 3, 1), 0.4), -- 1 idle
     anim8.newAnimation(player.spriteGrid("1-3", "2-3"), 0.15), -- 2 walk
     anim8.newAnimation(player.spriteGrid(1, 4), 0.15), -- 3 falling
     anim8.newAnimation(player.spriteGrid("2-3", 4, 3, 11), {0.125, 0.10, 0.10}, "pauseAtEnd"), -- 4 jumping

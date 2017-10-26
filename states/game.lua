@@ -49,7 +49,7 @@ function game:enter()
   objects.ground.body = love.physics.newBody(world, 160, 256)
   objects.ground.shape = love.physics.newRectangleShape(496, 20)
   objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape) --attach shape to body
-  objects.ground.sprite = maid64.newImage("img/platform5.png")
+  objects.ground.sprite = maid64.newImage("img/platform6.png")
   objects.ground.fixture:setCategory(4)
 
   objects.wallLeft = {}
@@ -128,12 +128,14 @@ function game:draw()
   
   drawPlatforms()
   
+  love.graphics.draw(objects.ground.sprite, 0, 230) -- crappy platform i made 
+
   drawEnemy()
 
   player.draw()
 
 
-  love.graphics.draw(objects.ground.sprite, 0, 230) -- crappy platform i made 
+  
 
   if DEBUG then
     love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints()))
