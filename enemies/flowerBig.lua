@@ -12,7 +12,7 @@ local flowerBig = {
     speed = 0,
     dir = 1,
     -- flowerBig assets
-    spriteSheet = "img/enemies/flowerBig.png",
+    spriteSheet = "img/enemies/flowerBig2.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
@@ -31,7 +31,8 @@ local flowerBig = {
     timers = {},
     isDead = false,
     category = CATEGORY.ENEMY,
-    layer = 2
+    layer = 2,
+    spawnCap = false
     -- head = {
     --   name = "head",
     --   w = 8,
@@ -65,11 +66,11 @@ flowerBig.load = function(entity)
   entity.body:setLinearDamping(0.05)
 
   --[[ Load flowerBig images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(24, 64, 72, 64, 0, 0, 0)
+  entity.spriteGrid = anim8.newGrid(48, 64, 144, 128, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid(1, 1), 0.5), -- 1 idle
-    anim8.newAnimation(entity.spriteGrid("2-3", 1), {0.5, 0.1}), -- 2 spawn
+    anim8.newAnimation(entity.spriteGrid("2-3", 1, "1-3", 2, 1, 1), 0.1, "pauseAtEnd"), -- 2 spawn
   }
 
   entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.GROUND)
@@ -86,6 +87,17 @@ local function flip(entity)
     entity.animations[i]:flipH()
   end
   entity.dir = -entity.dir -- flip their direction as well
+end
+
+local function getFrame(x, y, w, h, entity)
+  local width = entity.spriteGrid.imageWidth
+
+  -- determine and return exact frame # (see spritesheet)
+  local rowNum = width / w
+  local frameX = (x / w) + 1
+  local frameY = (y / h)
+  
+  return (frameY * rowNum) + frameX 
 end
 
 flowerBig.damage = function(a, entity)
@@ -130,13 +142,23 @@ flowerBig.behaviour = function(dt, entity)
     	-- if entity.curAnim == 1 and getTimerStatus("spawn", entity.timers) == false then
 				
     	if updateTimer(dt, "spawn", entity.timers) then
-        addEnemy("roly", entity.x+6, entity.y+30, 1)
+        entity.animations[2]:gotoFrame(1)
+        entity.animations[2]:resume()
     		entity.curAnim = 2
-	      -- entity.animations[2]:gotoFrame(1)
-      	-- entity.animations[2]:resume()
     		resetTimer(5.0, "spawn", entity.timers)
+        entity.spawnCap = false
     	end
 
+      if getTimerStatus("spawn", entity.timers) == false and entity.spawnCap == false then
+        local quad = entity.animations[2]:getFrameInfo()
+        local x, y, w, h = quad:getViewport()
+
+        local frame = getFrame(x, y, w, h, entity)
+        if frame == 6 then
+          addEnemy("roly", entity.x+30, entity.y+32, 1)  
+          entity.spawnCap = true
+        end
+      end
 
     end
   end

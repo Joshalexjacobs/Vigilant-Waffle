@@ -1,5 +1,6 @@
 -- roly.lua
 
+
 local roly = {
     name = "roly",
     hp = 10,
@@ -9,6 +10,7 @@ local roly = {
     h = 12,
     offX = -10,
     offY = -10,
+    maxSpeed = 75,
     speed = 75,
     dir = 1,
     -- roly assets
@@ -60,9 +62,9 @@ roly.load = function(entity)
   entity.body:setFixedRotation(true)
 
   entity.body:setGravityScale(1)
-  entity.body:setMass(1000)
+  --entity.body:setMass(1000)
 
-  entity.fixture:setRestitution(0.5)
+  entity.fixture:setRestitution(0.7)
 
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
@@ -122,9 +124,6 @@ roly.behaviour = function(dt, entity)
         elseif (a:getCategory() == CATEGORY.WALL or b:getCategory() == CATEGORY.WALL) and getTimerStatus("flip", entity.timers) then
           flip(entity)
           resetTimer(0.20, "flip", entity.timers)
-        elseif (a:getCategory() == CATEGORY.GROUND or b:getCategory() == CATEGORY.GROUND) then
-          entity.body:setGravityScale(0)
-          resetTimer(0.2, "bounce", entity.timers)
         end
       end
     end
@@ -135,6 +134,12 @@ roly.behaviour = function(dt, entity)
 
     entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
     local dx, dy = entity.body:getLinearVelocity()
+
+    if entity.isHit then
+      entity.speed = entity.maxSpeed - 30
+    else
+      entity.speed = entity.maxSpeed
+    end
 
     entity.body:setLinearVelocity(entity.speed * entity.dir, dy)
   end
