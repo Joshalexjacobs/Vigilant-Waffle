@@ -3,7 +3,8 @@
 shortPlatform 00.01 50 260 1
 
 --flowerBig 01.00 400 300 -1
-flowerBig 01.00 392 200 -1
+
+--  flowerBig 01.00 392 200 -1
 
 --flowerBig 01.00 8 300 1
 flowerBig 01.00 16 200 1
@@ -11,7 +12,7 @@ flowerBig 01.00 16 200 1
 -- pipes 01.00 440 75 -1
 -- pipes 01.00 -32 75 1
 
-bat 01.50 -32 75 1
+-- bat 01.50 -32 75 1
 
 
 end 10:00 1 1 1
