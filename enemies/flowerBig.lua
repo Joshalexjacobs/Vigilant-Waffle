@@ -31,7 +31,7 @@ local flowerBig = {
     timers = {},
     isDead = false,
     category = CATEGORY.ENEMY,
-    layer = 2,
+    layer = 1,
     spawnCap = false
     -- head = {
     --   name = "head",
@@ -138,7 +138,7 @@ flowerBig.behaviour = function(dt, entity)
     entity.speed = getBackgroundSpeed()
     entity.body:setLinearVelocity(0, entity.speed)
 
-    if entity.y < 225 then
+    if entity.y < 200 then
     	-- if entity.curAnim == 1 and getTimerStatus("spawn", entity.timers) == false then
 				
     	if updateTimer(dt, "spawn", entity.timers) then

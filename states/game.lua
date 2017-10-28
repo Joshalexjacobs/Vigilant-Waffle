@@ -128,9 +128,11 @@ function game:draw()
   
   drawPlatforms()
   
+  drawEnemyLayerOne()
+
   love.graphics.draw(objects.ground.sprite, 0, 230) -- crappy platform i made 
 
-  drawEnemy()
+  drawEnemyLayerTwo()
 
   player.draw()
 

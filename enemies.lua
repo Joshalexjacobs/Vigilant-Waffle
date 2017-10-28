@@ -84,11 +84,13 @@ function updateEnemy(dt)
   end
 end
 
-function drawEnemy()
-  for i, newEnemy in ipairs(enemiesOne) do
+function drawEnemyLayerOne()
+    for i, newEnemy in ipairs(enemiesOne) do
     newEnemy.draw(newEnemy)
-  end
+  end  
+end
 
+function drawEnemyLayerTwo()
   for i, newEnemy in ipairs(enemiesTwo) do
     newEnemy.draw(newEnemy)
   end
