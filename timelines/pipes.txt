@@ -1,12 +1,11 @@
 -- pipes pipes
 --------------------------------
-shortPlatform 00.01 150 260 1
+-- shortPlatform 00.01 150 260 1
 
---flowerBig 01.00 400 300 -1
+flowerBig 01.00 396 300 -1
+flowerBig 01.00 12 300 1
 
---flowerBig 01.00 392 200 -1
-
-flowerBig 01.00 16 300 1
+-- lilDemon 01.00 150 50 1
 
 -- pipes 01.00 440 75 -1
 -- pipes 01.00 -32 75 1

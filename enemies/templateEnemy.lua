@@ -5,8 +5,8 @@ local templateEnemy = {
     hp = 1,
     x = -50,
     y = -50,
-    w = 0,
-    h = 0,
+    w = 1,
+    h = 1,
     offX = 0,
     offY = 0,
     speed = 0,
@@ -32,6 +32,16 @@ local templateEnemy = {
     isDead = false,
     category = CATEGORY.ENEMY,
     layer = 1,
+    offsets = {
+      left ={
+        offX = 0,
+        offY = 0,
+      },
+      right = {
+        offX = -32,
+        offY = 0,
+      }
+    },
     -- head = {
     --   name = "head",
     --   w = 8,
@@ -79,12 +89,31 @@ templateEnemy.load = function(entity)
   addTimer(0.0, "flip", entity.timers)
 end
 
---[[ flip ]]
+--[[ local functions ]]
 local function flip(entity)
   for i = 1, table.getn(entity.animations) do
     entity.animations[i]:flipH()
   end
   entity.dir = -entity.dir -- flip their direction as well
+end
+
+local function getFrame(x, y, w, h, entity)
+  local width = entity.spriteGrid.imageWidth
+
+  -- determine and return exact frame # (see spritesheet)
+  local rowNum = width / w
+  local frameX = (x / w) + 1
+  local frameY = (y / h)
+  
+  return (frameY * rowNum) + frameX 
+end
+
+local function getOffsets(entity)
+  if tonumber(entity.dir) == 1 then
+    return entity.offsets.left.offX, entity.offsets.left.offY
+  else
+    return entity.offsets.right.offX, entity.offsets.right.offY
+  end
 end
 
 templateEnemy.damage = function(a, entity)

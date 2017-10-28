@@ -1,27 +1,27 @@
--- flowerBig.lua
+-- lilDemon.lua
 
-local flowerBig = {
-    name = "flowerBig",
-    hp = 30,
+local lilDemon = {
+    name = "lilDemon",
+    hp = 10,
     x = -50,
     y = -50,
-    w = 16,
-    h = 64,
-    offX = -32,
-    offY = 0,
+    w = 20,
+    h = 20,
+    offX = -6,
+    offY = -8,
     speed = 0,
     dir = 1,
-    -- flowerBig assets
-    spriteSheet = "img/enemies/flowerBig2.png",
+    -- lilDemon assets
+    spriteSheet = "img/enemies/lilDemon.png",
     spriteGrid = nil,
     animations = {},
     curAnim = 1,
-    -- flowerBig physics objects
+    -- lilDemon physics objects
     body = nil,
     shape = nil,
     fixture = nil,
     joint = nil,
-    -- flowerBig functions
+    -- lilDemon functions
     load = nil,
     behaviour = nil,
     draw = nil,
@@ -32,17 +32,6 @@ local flowerBig = {
     isDead = false,
     category = CATEGORY.ENEMY,
     layer = 1,
-    spawnCap = false,
-    offsets = {
-      left ={
-        offX = 0,
-        offY = 0,
-      },
-      right = {
-        offX = -32,
-        offY = 0,
-      }
-    },
     -- head = {
     --   name = "head",
     --   w = 8,
@@ -54,7 +43,7 @@ local flowerBig = {
     -- }
 }
 
-flowerBig.load = function(entity)
+lilDemon.load = function(entity)
   --[[ Physics setup ]]
 
   -- enemy body
@@ -69,26 +58,25 @@ flowerBig.load = function(entity)
   entity.fixture:setUserData(entity)
 
   entity.body:setFixedRotation(true)
-  entity.body:setMass(1000)
+  entity.body:setMass(1000) -- questionable whether i need this or not
+
   entity.body:setGravityScale(0)
 
   --[[ Damping (decelaration) ]]
   entity.body:setLinearDamping(0.05)
 
-  --[[ Load flowerBig images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(48, 64, 144, 128, 0, 0, 0)
+  --[[ Load lilDemon images/prep animations ]]
+  entity.spriteGrid = anim8.newGrid(32, 32, 64, 64, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
-    anim8.newAnimation(entity.spriteGrid(1, 1), 0.5), -- 1 idle
-    anim8.newAnimation(entity.spriteGrid("2-3", 1, "1-3", 2, 1, 1), 0.1, "pauseAtEnd"), -- 2 spawn
+    anim8.newAnimation(entity.spriteGrid("1-2", 1), 0.2), -- 1 idle
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.WALL, CATEGORY.GROUND)
+  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
 
-  --[[ Setup flowerBig Timers ]]
+  --[[ Setup lilDemon Timers ]]
   addTimer(0.0, "isHit", entity.timers)
   addTimer(0.0, "flip", entity.timers)
-  addTimer(1.0, "spawn", entity.timers)
 end
 
 --[[ flip ]]
@@ -99,26 +87,7 @@ local function flip(entity)
   entity.dir = -entity.dir -- flip their direction as well
 end
 
-local function getFrame(x, y, w, h, entity)
-  local width = entity.spriteGrid.imageWidth
-
-  -- determine and return exact frame # (see spritesheet)
-  local rowNum = width / w
-  local frameX = (x / w) + 1
-  local frameY = (y / h)
-  
-  return (frameY * rowNum) + frameX 
-end
-
-local function getOffsets(entity)
-  if tonumber(entity.dir) == 1 then
-    return entity.offsets.left.offX, entity.offsets.left.offY
-  else
-    return entity.offsets.right.offX, entity.offsets.right.offY
-  end
-end
-
-flowerBig.damage = function(a, entity)
+lilDemon.damage = function(a, entity)
   entity.isHit = true
   resetTimer(0.05, "isHit", entity.timers)
   entity.hp = entity.hp - 1
@@ -128,12 +97,12 @@ flowerBig.damage = function(a, entity)
   end
 end
 
-flowerBig.kill = function(entity)
+lilDemon.kill = function(entity)
   entity.body:destroy()
 end
 
-flowerBig.behaviour = function(dt, entity)
-  --[[ Update flowerBig anim ]]
+lilDemon.behaviour = function(dt, entity)
+  --[[ Update lilDemon anim ]]
   entity.animations[entity.curAnim]:update(dt)
 
   if entity.body:isDestroyed() == false then
@@ -152,45 +121,13 @@ flowerBig.behaviour = function(dt, entity)
 
     entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
     local dx, dy = entity.body:getLinearVelocity()
-
-    entity.speed = getBackgroundSpeed()
-    entity.body:setLinearVelocity(0, entity.speed)
-
-    if entity.y < 200 then
-    	-- if entity.curAnim == 1 and getTimerStatus("spawn", entity.timers) == false then
-				
-    	if updateTimer(dt, "spawn", entity.timers) then
-        entity.animations[2]:gotoFrame(1)
-        entity.animations[2]:resume()
-    		entity.curAnim = 2
-    		resetTimer(5.0, "spawn", entity.timers)
-        entity.spawnCap = false
-    	end
-
-      if getTimerStatus("spawn", entity.timers) == false and entity.spawnCap == false then
-        local quad = entity.animations[2]:getFrameInfo()
-        local x, y, w, h = quad:getViewport()
-
-        local frame = getFrame(x, y, w, h, entity)
-        if frame == 6 then
-          local dir = tonumber(entity.dir)
-          if dir == 1 then
-            addEnemy("roly", entity.x+30, entity.y+32, entity.dir)  
-          else 
-            addEnemy("roly", entity.x-20, entity.y+32, entity.dir)
-          end
-          entity.spawnCap = true
-        end
-      end
-
-    end
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
     entity.isHit = false
   end
 
-  --[[ Once flowerBig dies ]]
+  --[[ Once lilDemon dies ]]
   if entity.hp <= 0 then
     if checkTimer("playDead", entity.timers) == false then
       addTimer(0.01, "playDead", entity.timers)
@@ -204,16 +141,14 @@ flowerBig.behaviour = function(dt, entity)
 
 end
 
-flowerBig.draw = function(entity)
+lilDemon.draw = function(entity)
   --[[ Draw ]]
   if entity.isHit then
     love.graphics.setColor(128, 17, 17)
   end
 
   if entity.body:isDestroyed() == false then
-    local offX, offY = getOffsets(entity)
-
-    entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + offX, entity.y + offY)
+    entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + entity.offX, entity.y + entity.offY)
 
     if DEBUG then
       love.graphics.setColor(255, 0, 0)
@@ -225,4 +160,4 @@ flowerBig.draw = function(entity)
   love.graphics.setColor(255, 255, 255)
 end
 
-return flowerBig
+return lilDemon
