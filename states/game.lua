@@ -30,11 +30,24 @@ local function restart()
 end
 
 function game:keypressed(key, code)
-  if key == 'r' and player.isDead then
-    player.reset()
-    resetEnemies()
-		resetPlatforms()
-    resetTM()
+  if key == 'r' then
+    if player.isDead then
+      player.reset()
+      resetEnemies()
+  		resetPlatforms()
+      resetTM()
+    end
+  end
+end
+
+function game:joystickpressed(joystick, button)
+  if button then
+    if player.isDead then
+      player.reset()
+      resetEnemies()
+      resetPlatforms()
+      resetTM()
+    end
   end
 end
 

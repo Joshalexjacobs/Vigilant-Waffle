@@ -2,9 +2,8 @@
 
 local timeline = {}
 
--- local timelineName = "timelines/demo.txt"
 -- local timelineName = "timelines/bats.txt"
-local timelineName = "timelines/pipes.txt"
+local timelineName = "timelines/demo_1.txt"
 
 local time = 0
 

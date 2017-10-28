@@ -3,7 +3,7 @@
 
 local roly = {
     name = "roly",
-    hp = 10,
+    hp = 5,
     x = -50,
     y = -50,
     w = 12,

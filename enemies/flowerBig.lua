@@ -2,7 +2,7 @@
 
 local flowerBig = {
     name = "flowerBig",
-    hp = 30,
+    hp = 25,
     x = -50,
     y = -50,
     w = 16,
