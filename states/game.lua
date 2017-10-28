@@ -40,6 +40,8 @@ function game:keypressed(key, code)
   end
 end
 
+--[[mbta, text, pee, food]]
+
 function game:joystickpressed(joystick, button)
   if button then
     if player.isDead then
