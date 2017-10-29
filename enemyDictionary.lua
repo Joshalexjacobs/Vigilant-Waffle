@@ -4,6 +4,7 @@ local newOne = require "enemies/newOne"
 local ogre = require "enemies/ogre"
 local pipes = require "enemies/pipes"
 local bat = require "enemies/bat"
+local bigBat = require "enemies/bigBat"
 local flowerBig = require "enemies/flowerBig"
 local roly = require "enemies/roly"
 local lilDemon = require "enemies/lilDemon"
@@ -14,6 +15,7 @@ local enemyDictionary = {
   {name = "newOne", enemy = newOne},
   {name = "ogre", enemy = ogre},
   {name = "bat", enemy = bat},
+  {name = "bigBat", enemy = bigBat},
   {name = "pipes", enemy = pipes},
   {name = "flowerBig", enemy = flowerBig},
   {name = "roly", enemy = roly},
