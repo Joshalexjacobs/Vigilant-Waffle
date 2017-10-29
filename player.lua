@@ -163,7 +163,7 @@ local function shoot(dt, player)
         player.state = "angled"
       end
 
-      setShake(0.1, 0.2)
+      setShake(0.1, 0.3)
       resetTimer(player.shootRate, "shoot", player.timers)
     end
   else
