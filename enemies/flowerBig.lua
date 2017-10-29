@@ -6,7 +6,7 @@ local flowerBig = {
     x = -50,
     y = -50,
     w = 16,
-    h = 64,
+    h = 42,
     offX = -32,
     offY = 0,
     speed = 0,
@@ -36,11 +36,11 @@ local flowerBig = {
     offsets = {
       left ={
         offX = 0,
-        offY = 0,
+        offY = -12,
       },
       right = {
         offX = -32,
-        offY = 0,
+        offY = -12,
       }
     },
     -- head = {

@@ -2,12 +2,12 @@
 
 local bigBat = {
     name = "bigBat",
-    hp = 10,
+    hp = 6,
     x = -50,
     y = -50,
     w = 16,
     h = 10,
-    speed = 40, -- 40
+    speed = 35,
     dir = 1,
     -- bigBat assets
     spriteSheet = "img/enemies/bigBat2.png",
@@ -191,10 +191,10 @@ bigBat.behaviour = function(dt, entity)
       setPoint(entity)
     end
 
-    local tx = entity.destination.x - entity.x
-    local ty = entity.destination.y - entity.y
-    -- local tx = player.body:getX() - entity.x
-    -- local ty = player.body:getY() - entity.y
+    -- local tx = entity.destination.x - entity.x
+    -- local ty = entity.destination.y - entity.y
+    local tx = player.body:getX() - entity.x
+    local ty = player.body:getY() - entity.y
     local dist = math.sqrt(tx * tx + ty * ty)
 
     entity.body:setLinearVelocity((tx / dist) * entity.speed, (ty / dist) * entity.speed)    

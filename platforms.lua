@@ -39,7 +39,11 @@ function addTimelinePlatform(name, x, y)
 	for i = 1, #platformTypes do
 		if name == platformTypes[i].name then
 			--addPlatform(x, y, platformTypes[i].w, platformTypes[i].h, platformTypes[i].sprite)
-			addPlatform(x, y, platformTypes[i])
+			if x == "nil" or y == "nil" then
+				addPlatform(love.math.random(25, 350), love.math.random(260, 360), platformTypes[i])
+			else
+				addPlatform(x, y, platformTypes[i])
+			end
 			return true
 		end
 	end

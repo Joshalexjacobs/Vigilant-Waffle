@@ -2,9 +2,18 @@
 
 local timeline = {}
 
-local timelineName = "timelines/demo_1.txt"
+local timelineName = "timelines/demo_2.txt"
 -- local timelineName = "timelines/bats.txt"
 -- local timelineName = "timelines/pipes.txt"
+
+local scenes = {
+ --"timelines/demo_1.txt",
+ "timelines/demo_2.txt" 
+}
+
+local curScene = 1
+
+local overallTime = 0
 
 local time = 0
 
@@ -12,7 +21,8 @@ local allSpawned = false
 
 function loadTimelineManager()
   -- load timeline and store in timeline
-  for line in io.lines(timelineName) do
+  -- for line in io.lines(timelineName) do
+  for line in io.lines(scenes[curScene]) do
     local row = {name = nil, time = nil, x = nil, y = nil, dir = 1}
 
     if line == nil or line == '' or line == ' ' or string.sub(line, 1, 2) == "--" then
@@ -63,9 +73,13 @@ function updateTM()
   end
 
   if allSpawned and getEnemyCount() <= 0 then
+    curScene = curScene + 1
+    if curScene > #scenes then
+      curScene = 1
+    end
+
     resetTM()
     allSpawned = false
-    -- grab a new timeline to choose from
   end
 end
 
@@ -75,6 +89,7 @@ end
 
 function updateTime(dt)
   time = math.floor((time + dt ) * (10 ^ 2) + 0.5) / (10 ^ 2)
+  overallTime = math.floor((overallTime + dt ) * (10 ^ 2) + 0.5) / (10 ^ 2)
 
   return time
 end
@@ -82,6 +97,9 @@ end
 function drawTime()
   if DEBUG then
     love.graphics.printf(time, 5, 0, 200) -- testing
-    love.graphics.printf("- " .. timelineName, 35, 0, 200) -- testing
+    
+    love.graphics.printf("- " .. scenes[curScene], 35, 0, 200) -- testing
   end
+
+  love.graphics.printf(overallTime, 5, 10, 200) -- testing
 end
