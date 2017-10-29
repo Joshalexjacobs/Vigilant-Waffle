@@ -8,7 +8,8 @@ local timelineName = "timelines/demo_2.txt"
 
 local scenes = {
  --"timelines/demo_1.txt",
- "timelines/demo_2.txt" 
+ -- "timelines/demo_2.txt" 
+ "timelines/wall.txt" 
 }
 
 local curScene = 1

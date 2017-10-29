@@ -8,6 +8,7 @@ local bigBat = require "enemies/bigBat"
 local flowerBig = require "enemies/flowerBig"
 local roly = require "enemies/roly"
 local lilDemon = require "enemies/lilDemon"
+local wallOne = require "enemies/wallOne"
 
 local enemyDictionary = {
   {name = "skull", enemy = skull},
@@ -20,6 +21,7 @@ local enemyDictionary = {
   {name = "flowerBig", enemy = flowerBig},
   {name = "roly", enemy = roly},
   {name = "lilDemon", enemy = lilDemon},
+  {name = "wallOne", enemy = wallOne},
 }
 
 function loadEnemyDictionary()
