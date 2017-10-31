@@ -9,7 +9,7 @@ local wallOne = {
     h = 25,
     offX = 0,
     offY = 0,
-    speed = 0,
+    speed = 10,
     dir = 1,
     -- wallOne assets
     spriteSheet = "img/enemies/wallOne.png",
@@ -31,7 +31,7 @@ local wallOne = {
     timers = {},
     isDead = false,
     category = CATEGORY.WALL,
-    layer = 1,
+    layer = 2,
     offsets = {
       left ={
         offX = 0,
@@ -42,6 +42,8 @@ local wallOne = {
         offY = -9,
       }
     },
+    -- destination = 241
+    destination = 235
     -- head = {
     --   name = "head",
     --   w = 8,
@@ -76,13 +78,13 @@ wallOne.load = function(entity)
   entity.body:setLinearDamping(0.05)
 
   --[[ Load wallOne images/prep animations ]]
-  entity.spriteGrid = anim8.newGrid(16, 32, 16, 32, 0, 0, 0)
+  entity.spriteGrid = anim8.newGrid(16, 48, 16, 48, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid(1, 1), 0.5), -- 1 idle
   }
 
-  entity.fixture:setMask(CATEGORY.ENEMY, CATEGORY.ENEMY)
+  entity.fixture:setMask(CATEGORY.GROUND)
 
   --[[ Setup wallOne Timers ]]
   addTimer(0.0, "isHit", entity.timers)
@@ -117,7 +119,7 @@ local function getOffsets(entity)
 end
 
 wallOne.damage = function(a, entity)
-  entity.isHit = true
+  -- entity.isHit = true
   resetTimer(0.05, "isHit", entity.timers)
   entity.hp = entity.hp - 1
 
@@ -150,6 +152,16 @@ wallOne.behaviour = function(dt, entity)
 
     entity.x, entity.y = entity.body:getWorldPoints(entity.shape:getPoints())
     local dx, dy = entity.body:getLinearVelocity()
+
+    local tx = 0
+    local ty = entity.body:getY() - entity.destination
+    local dist = math.sqrt(tx * tx + ty * ty)
+
+    if entity.body:getY() <= entity.destination then
+      entity.body:setLinearVelocity(0, 0)
+    else
+      entity.body:setLinearVelocity((tx / dist) * entity.speed, (ty / dist) * -entity.speed)
+    end
   end
 
   if updateTimer(dt, "isHit", entity.timers) then
@@ -181,7 +193,7 @@ wallOne.draw = function(entity)
     entity.animations[entity.curAnim]:draw(entity.spriteSheet, entity.x + offX, entity.y + offY)
 
     if DEBUG then
-      love.graphics.setColor(255, 0, 0)
+      love.graphics.setColor(255, 255, 255)
       love.graphics.printf(entity.hp, entity.x, 0, 100)
       love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
     end
