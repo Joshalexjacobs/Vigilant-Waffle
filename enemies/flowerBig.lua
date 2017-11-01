@@ -181,6 +181,10 @@ flowerBig.behaviour = function(dt, entity)
           end
           entity.spawnCap = true
         end
+      elseif entity.y < -50 then
+        addTimer(0.01, "playDead", entity.timers)
+        entity.kill(entity)
+        entity.isDead = true
       end
 
     end

@@ -2,14 +2,13 @@
 
 local timeline = {}
 
-local timelineName = "timelines/demo_2.txt"
+-- local timelineName = "timelines/demo_2.txt"
 -- local timelineName = "timelines/bats.txt"
 -- local timelineName = "timelines/pipes.txt"
 
 local scenes = {
- --"timelines/demo_1.txt",
- -- "timelines/demo_2.txt" 
- "timelines/wall.txt" 
+ "timelines/demo_1.txt",
+ "timelines/demo_2.txt" 
 }
 
 local curScene = 1
