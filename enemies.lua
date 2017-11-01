@@ -45,10 +45,14 @@ function resetEnemies()
 end
 
 function addEnemy(name, x, y, dir)
-  local newEnemy = getEnemy(name)
-  if x then newEnemy.body:setX(x) end
-  if y then newEnemy.body:setY(y) end
-  if dir then newEnemy.dir = dir end
+  local newEnemy = getEnemy(name, x, y)
+  if newEnemy.init then newEnemy.init(newEnemy, x, y, dir) 
+  else
+    if x then newEnemy.body:setX(x) end
+    if y then newEnemy.body:setY(y) end
+    if dir then newEnemy.dir = dir end
+  end
+
 
   -- temporary flip until i think of a better place for this
   if tonumber(dir) == -1 then

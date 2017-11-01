@@ -3,10 +3,10 @@
 local wallOne = {
     name = "wallOne",
     hp = 20,
-    x = -50,
-    y = -50,
+    x = 50,
+    y = 50,
     w = 16,
-    h = 25,
+    h = 30, -- 25
     offX = 0,
     offY = 0,
     speed = 10,
@@ -23,6 +23,7 @@ local wallOne = {
     joint = nil,
     -- wallOne functions
     load = nil,
+    init = nil,
     behaviour = nil,
     draw = nil,
     damage = nil,
@@ -43,50 +44,73 @@ local wallOne = {
       }
     },
     -- destination = 241
-    destination = 235
-    -- head = {
-    --   name = "head",
-    --   w = 8,
-    --   h = 2,
-    --   body = nil,
-    --   shape = nil,
-    --   fixture = nil,
-    --   category = CATEGORY.HEAD
-    -- }
+    destination = 235,
+    head = {
+      name = "head",
+      w = 12,
+      h = 3,
+      offY = 15,
+      body = nil,
+      shape = nil,
+      fixture = nil,
+      category = CATEGORY.GROUND
+    }
 }
 
 wallOne.load = function(entity)
-  --[[ Physics setup ]]
-
-  -- enemy body
-  entity.body = love.physics.newBody(world, 45, 25, "dynamic") -- makes it unmoving
-  entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
-  entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
-
-  -- set categories
-  entity.fixture:setCategory(entity.category)
-
-  -- set user data for fixtures
-  entity.fixture:setUserData(entity)
-
-  entity.body:setFixedRotation(true)
-  entity.body:setMass(1000) -- questionable whether i need this or not
-
-  entity.body:setGravityScale(0)
-
-  --[[ Damping (decelaration) ]]
-  entity.body:setLinearDamping(0.05)
-
   --[[ Load wallOne images/prep animations ]]
   entity.spriteGrid = anim8.newGrid(16, 48, 16, 48, 0, 0, 0)
   entity.spriteSheet = maid64.newImage(entity.spriteSheet)
   entity.animations = {
     anim8.newAnimation(entity.spriteGrid(1, 1), 0.5), -- 1 idle
   }
+end
 
+wallOne.init = function(entity, x, y, dir)
+  entity.x = x
+  entity.y = y
+  entity.dir = dir
+
+  --[[ Physics setup ]]
+
+  -- enemy body
+  entity.body = love.physics.newBody(world, entity.x, entity.y, "dynamic") -- makes it unmoving
+  entity.shape = love.physics.newRectangleShape(0, 0, entity.w, entity.h)
+  entity.fixture = love.physics.newFixture(entity.body, entity.shape, 1)
+
+  -- enemy head
+  entity.head.body = love.physics.newBody(world, entity.x, entity.y - entity.head.offY, "dynamic")
+  entity.head.shape = love.physics.newRectangleShape(0, 0, entity.head.w, entity.head.h)
+  entity.head.fixture = love.physics.newFixture(entity.head.body, entity.head.shape, 1)
+
+  -- joint that connects the enemie's body and head
+  local jointX, jointY = entity.body:getPosition()
+  entity.joint = love.physics.newWeldJoint(entity.body, entity.head.body, jointX, jointY, false)
+
+  -- set categories
+  entity.fixture:setCategory(entity.category)
+  entity.head.fixture:setCategory(entity.head.category)
+
+  -- set user data for fixtures
+  entity.fixture:setUserData(entity)
+
+  entity.body:setFixedRotation(true)
+  entity.body:setMass(1000)
+  entity.body:setGravityScale(0)
+
+  entity.head.body:setFixedRotation(true)
+  entity.head.body:setMass(1000)
+  entity.head.body:setGravityScale(0)
+
+  --[[ Damping (decelaration) ]]
+  entity.body:setLinearDamping(0.05)
+  entity.head.body:setLinearDamping(0.05)  
+
+  --[[ Setup enemy masks ]]
   entity.fixture:setMask(CATEGORY.GROUND)
+  entity.head.fixture:setMask(CATEGORY.GROUND, CATEGORY.WALL)
 
-  --[[ Setup wallOne Timers ]]
+    --[[ Setup wallOne Timers ]]
   addTimer(0.0, "isHit", entity.timers)
   addTimer(0.0, "flip", entity.timers)
 end
@@ -130,6 +154,7 @@ end
 
 wallOne.kill = function(entity)
   entity.body:destroy()
+  entity.head.body:destroy()
 end
 
 wallOne.behaviour = function(dt, entity)
@@ -196,6 +221,9 @@ wallOne.draw = function(entity)
       love.graphics.setColor(255, 255, 255)
       love.graphics.printf(entity.hp, entity.x, 0, 100)
       love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
+
+      love.graphics.setColor(0, 255, 0)
+    love.graphics.polygon("line", entity.head.body:getWorldPoints(entity.head.shape:getPoints()))      
     end
   end
 
